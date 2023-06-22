@@ -9,7 +9,6 @@ variable domain_name {}
 variable ecr_region {}
 variable ecr_account_id {}
 variable security_groups {}
-variable logdna_lambda_logs_arn {}
 
 variable whitelisted_ips {
   description = "Whitelisted IPs"
