@@ -9,6 +9,7 @@ variable domain_name {}
 variable ecr_region {}
 variable ecr_account_id {}
 variable security_groups {}
+variable mezmo_account_id {}
 
 variable whitelisted_ips {
   description = "Whitelisted IPs"
