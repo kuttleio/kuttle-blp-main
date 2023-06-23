@@ -20,7 +20,7 @@ variable github_token {}
 variable guthub_owner {}
 
 variable secrets {}
-variable environment {}
+variable envvars {}
 
 variable public_subnets {}
 variable private_subnets {}

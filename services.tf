@@ -70,7 +70,7 @@ module frontend {
   domain_name             = var.domain_name
   task_role_arn           = aws_iam_role.main.arn
   secrets                 = setunion(var.secrets)
-  environment             = setunion(var.environment_variables, local.added_env)
+  environment             = setunion(var.envvars, local.added_env)
 }
 
 module backend {
@@ -93,7 +93,7 @@ module backend {
   domain_name             = var.domain_name
   task_role_arn           = aws_iam_role.main.arn
   secrets                 = setunion(var.secrets)
-  environment             = setunion(var.environment_variables, local.added_env, [
+  environment             = setunion(var.envvars, local.added_env, [
     {
       name  = "UPDATE_STATUSES_CRON"
       value = "*/10 * * * *"
@@ -124,5 +124,5 @@ module runner {
   domain_name             = var.domain_name
   task_role_arn           = aws_iam_role.main.arn
   secrets                 = setunion(var.secrets)
-  environment             = setunion(var.environment_variables, local.added_env)
+  environment             = setunion(var.envvars, local.added_env)
 }
