@@ -8,7 +8,7 @@ locals {
 resource aws_security_group main {
     name        = "${local.name_prefix}-${var.clp_zenv} LB SG"
     description = "LB Access SG"
-    vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
+    vpc_id      = var.vpc_id
     tags        = merge(var.standard_tags, tomap({ Name = "${local.name_prefix}-${var.clp_zenv} LB security group" }))
 
     egress {
@@ -40,7 +40,7 @@ resource aws_lb frontend {
     name               = "${local.name_prefix}-${var.clp_zenv}-Frontend-LB"
     load_balancer_type = "application"
     security_groups    = [aws_security_group.main.id]
-    subnets            = data.terraform_remote_state.vpc.outputs.public_subnets
+    subnets            = var.public_subnets
 
     access_logs {
         bucket  = aws_s3_bucket.logs.bucket
@@ -66,7 +66,7 @@ resource aws_lb backend {
     name               = "${local.name_prefix}-${var.clp_zenv}-Backend-LB"
     load_balancer_type = "application"
     security_groups    = [aws_security_group.main.id]
-    subnets            = data.terraform_remote_state.vpc.outputs.public_subnets
+    subnets            = var.public_subnets
 
     access_logs {
         bucket  = aws_s3_bucket.logs.bucket

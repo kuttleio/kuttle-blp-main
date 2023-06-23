@@ -1,5 +1,4 @@
 variable vpc_id {}
-variable subnets {}
 variable clp_region {}
 variable clp_account {}
 variable clp_zenv {}
@@ -22,6 +21,9 @@ variable guthub_owner {}
 
 variable secrets {}
 variable environment {}
+
+variable public_subnets {}
+variable private_subnets {}
 
 variable whitelisted_ips {
   description = "Whitelisted IPs"

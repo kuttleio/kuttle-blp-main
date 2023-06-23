@@ -61,7 +61,7 @@ module frontend {
   zenv                    = var.clp_zenv
   vpc_id                  = var.vpc_id
   security_groups         = var.security_groups
-  subnets                 = var.subnets
+  subnets                 = var.private_subnets
   ecr_account_id          = var.account_id
   ecr_region              = var.ecr_region
   aws_lb_arn              = aws_lb.frontend.arn
@@ -84,7 +84,7 @@ module backend {
   zenv                    = var.clp_zenv
   vpc_id                  = var.vpc_id
   security_groups         = var.security_groups
-  subnets                 = var.subnets
+  subnets                 = var.private_subnets
   ecr_account_id          = var.account_id
   ecr_region              = var.ecr_region
   aws_lb_arn              = aws_lb.backend.arn
@@ -116,7 +116,7 @@ module runner {
   zenv                    = var.clp_zenv
   vpc_id                  = var.vpc_id
   security_groups         = var.security_groups
-  subnets                 = var.subnets
+  subnets                 = var.private_subnets
   ecr_account_id          = var.account_id
   ecr_region              = var.ecr_region
   logs_destination_arn    = module.lambda.lambda_function_arn

@@ -24,7 +24,7 @@ module postgre {
     instance_type   = local.instance_type
     vpc_id          = var.vpc_id
     security_groups = var.security_groups
-    subnets         = var.subnets
+    subnets         = var.private_subnets
     tags            = var.standard_tags
 }
 
