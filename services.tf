@@ -42,8 +42,8 @@ locals {
 #    Service Discovery Namespace
 # ---------------------------------------------------
 resource aws_service_discovery_private_dns_namespace main {
-  name        = "${var.name_prefix}-${var.clp_zenv}-ns"
-  description = "${var.name_prefix}-${var.clp_zenv} Private Namespace"
+  name        = "${local.name_prefix}-${var.clp_zenv}-ns"
+  description = "${local.name_prefix}-${var.clp_zenv} Private Namespace"
   vpc         = data.terraform_remote_state.vpc.outputs.vpc_id
 }
 
@@ -55,7 +55,7 @@ module frontend {
   public                  = true
   service_name            = "frontend"
   service_image           = "${aws_ecr_repository.main.repository_url}:frontend"
-  name_prefix             = var.name_prefix
+  name_prefix             = local.name_prefix
   standard_tags           = var.standard_tags
   cluster_name            = module.ecs_fargate.cluster_name
   zenv                    = var.clp_zenv
@@ -79,7 +79,7 @@ module backend {
   public                  = true
   service_name            = "backend"
   service_image           = "${aws_ecr_repository.main.repository_url}:backend"
-  name_prefix             = var.name_prefix
+  name_prefix             = local.name_prefix
   standard_tags           = var.standard_tags
   cluster_name            = module.ecs_fargate.cluster_name
   zenv                    = var.clp_zenv
@@ -112,7 +112,7 @@ module runner {
   public                  = false
   service_name            = "runner"
   service_image           = "${aws_ecr_repository.main.repository_url}:runner"
-  name_prefix             = var.name_prefix
+  name_prefix             = local.name_prefix
   standard_tags           = var.standard_tags
   cluster_name            = module.ecs_fargate.cluster_name
   zenv                    = var.clp_zenv

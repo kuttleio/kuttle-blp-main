@@ -13,7 +13,7 @@ data github_repository runner {
 resource github_repository_file frontend {
   repository          = data.github_repository.frontend.name
   branch              = "master"
-  file                = ".github/workflows/${var.name_prefix}-${var.clp_zenv}.yaml"
+  file                = ".github/workflows/${local.name_prefix}-${var.clp_zenv}.yaml"
   commit_message      = "Add CICD: delivery from /master to ${var.clp_zenv}"
   commit_author       = "kuttle-bot"
   commit_email        = "kbot@ktl.ai"
@@ -31,7 +31,7 @@ resource github_repository_file frontend {
 resource github_repository_file backend {
   repository          = data.github_repository.backend.name
   branch              = "master"
-  file                = ".github/workflows/${var.name_prefix}-${var.clp_zenv}.yaml"
+  file                = ".github/workflows/${local.name_prefix}-${var.clp_zenv}.yaml"
   commit_message      = "Add CICD: delivery from /master to ${var.clp_zenv}"
   commit_author       = "kuttle-bot"
   commit_email        = "kbot@ktl.ai"
@@ -49,7 +49,7 @@ resource github_repository_file backend {
 resource github_repository_file runner {
   repository          = data.github_repository.runner.name
   branch              = "master"
-  file                = ".github/workflows/${var.name_prefix}-${var.clp_zenv}.yaml"
+  file                = ".github/workflows/${local.name_prefix}-${var.clp_zenv}.yaml"
   commit_message      = "Add CICD: delivery from /master to ${var.clp_zenv}"
   commit_author       = "kuttle-bot"
   commit_email        = "kbot@ktl.ai"

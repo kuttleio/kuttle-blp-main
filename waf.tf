@@ -2,7 +2,7 @@
 #   Web Application Firewall (WAF)
 # ---------------------------------------------------
 resource aws_wafv2_web_acl waf_acl {
-  name        = "${var.name_prefix}-${var.clp_zenv}-WAF-ACL"
+  name        = "${local.name_prefix}-${var.clp_zenv}-WAF-ACL"
   description = "WAF ACL"
 
   scope = "REGIONAL"
@@ -65,7 +65,7 @@ resource aws_wafv2_web_acl waf_acl {
 }
 
 resource aws_wafv2_ip_set whitelisted_ips {
-  name              = "${var.name_prefix}-${var.clp_zenv}-Whitelisted-IPs"
+  name              = "${local.name_prefix}-${var.clp_zenv}-Whitelisted-IPs"
   description       = "Whitelisted IPs"
   scope             = "REGIONAL"  
   addresses         = var.whitelisted_ips

@@ -6,10 +6,10 @@ locals {
 #   Security Group for Public LBs
 # ---------------------------------------------------
 resource aws_security_group main {
-    name        = "${var.name_prefix}-${var.clp_zenv} LB SG"
+    name        = "${local.name_prefix}-${var.clp_zenv} LB SG"
     description = "LB Access SG"
     vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
-    tags        = merge(var.standard_tags, tomap({ Name = "${var.name_prefix}-${var.clp_zenv} LB security group" }))
+    tags        = merge(var.standard_tags, tomap({ Name = "${local.name_prefix}-${var.clp_zenv} LB security group" }))
 
     egress {
         from_port     = 0
@@ -37,7 +37,7 @@ resource aws_security_group main {
 #   Public LB - Frontend
 # ---------------------------------------------------
 resource aws_lb frontend {
-    name               = "${var.name_prefix}-${var.clp_zenv}-Frontend-LB"
+    name               = "${local.name_prefix}-${var.clp_zenv}-Frontend-LB"
     load_balancer_type = "application"
     security_groups    = [aws_security_group.main.id]
     subnets            = data.terraform_remote_state.vpc.outputs.public_subnets
@@ -48,7 +48,7 @@ resource aws_lb frontend {
         enabled = true
     }
 
-    tags = merge(var.standard_tags, tomap({ Name = "${var.name_prefix}-${var.clp_zenv}-Frontend-LB" }))
+    tags = merge(var.standard_tags, tomap({ Name = "${local.name_prefix}-${var.clp_zenv}-Frontend-LB" }))
 }
 
 resource aws_route53_record frontend {
@@ -63,7 +63,7 @@ resource aws_route53_record frontend {
 #   Public LB - Backend
 # ---------------------------------------------------
 resource aws_lb backend {
-    name               = "${var.name_prefix}-${var.clp_zenv}-Backend-LB"
+    name               = "${local.name_prefix}-${var.clp_zenv}-Backend-LB"
     load_balancer_type = "application"
     security_groups    = [aws_security_group.main.id]
     subnets            = data.terraform_remote_state.vpc.outputs.public_subnets
@@ -74,7 +74,7 @@ resource aws_lb backend {
         enabled = true
     }
 
-    tags = merge(var.standard_tags, tomap({ Name = "${var.name_prefix}-${var.clp_zenv}-Backend-LB" }))
+    tags = merge(var.standard_tags, tomap({ Name = "${local.name_prefix}-${var.clp_zenv}-Backend-LB" }))
 }
 
 resource aws_route53_record backend {
@@ -89,7 +89,7 @@ resource aws_route53_record backend {
 #   S3 bucket + policy
 # ---------------------------------------------------
 resource aws_s3_bucket logs {
-    bucket          = "${var.name_prefix}-${var.clp_zenv}-lb-logs"
+    bucket          = "${local.name_prefix}-${var.clp_zenv}-lb-logs"
     force_destroy   = true
     acl             = "private"
     tags            = var.standard_tags

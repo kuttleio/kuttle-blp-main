@@ -13,7 +13,7 @@ module postgre {
     source  = "cloudposse/rds-cluster/aws"
     version = "~> 1.4.0"
 
-    name            = "${var.name_prefix}-${var.clp_zenv}-PostgreSQL"
+    name            = "${local.name_prefix}-${var.clp_zenv}-PostgreSQL"
     engine          = local.engine
     cluster_family  = local.cluster_family
     cluster_size    = local.cluster_size
@@ -22,9 +22,9 @@ module postgre {
     db_name         = local.db_name
     db_port         = local.db_port
     instance_type   = local.instance_type
-    vpc_id          = data.terraform_remote_state.vpc.outputs.vpc_id
-    security_groups = [data.terraform_remote_state.sg.outputs.clp_bastion_sg]
-    subnets         = data.terraform_remote_state.vpc.outputs.private_subnets
+    vpc_id          = var.vpc_id
+    security_groups = var.security_groups
+    subnets         = var.subnets
     tags            = var.standard_tags
 }
 
@@ -34,7 +34,7 @@ resource random_password postgre {
 }
 
 resource aws_ssm_parameter postgre_connection_string {
-    name    = "/${var.name_prefix}/${var.clp_zenv}/postgre_connection_string"
+    name    = "/${local.name_prefix}/${var.clp_zenv}/postgre_connection_string"
     type    = "SecureString"
     value   = "postgres://${module.postgre.master_username}:${random_password.postgre.result}@${module.postgre.endpoint}/${module.postgre.database_name}"
     tags    = var.standard_tags

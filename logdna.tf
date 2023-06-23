@@ -5,7 +5,7 @@ resource logdna_view main {
     name        = "${var.clp_zenv}-${local.short_region_name} - logs"
     query       = "-health"
     categories  = ["DEV"]
-    tags        = ["${var.name_prefix}-${var.clp_zenv}"]
+    tags        = ["${local.name_prefix}-${var.clp_zenv}"]
 }
 
 resource logdna_view errors {
@@ -13,7 +13,7 @@ resource logdna_view errors {
     name        = "${var.clp_zenv}-${local.short_region_name} - errors"
     query       = "-health"
     categories  = ["DEV"]
-    tags        = ["${var.name_prefix}-${var.clp_zenv}"]
+    tags        = ["${local.name_prefix}-${var.clp_zenv}"]
 
     # slack_channel {
     #     immediate       = "true"
@@ -28,16 +28,11 @@ resource logdna_view errors {
 # ---------------------------------------------------
 #    LogDNA pushing logs from CloudWatch
 # ---------------------------------------------------
-data aws_ssm_parameter logdna_ingestion_key {
-    name            = "/${var.name_prefix}/logdna_ingestion_key"
-    with_decryption = true
-}
-
 module lambda {
     source  = "terraform-aws-modules/lambda/aws"
     version = "~> 4.0"
 
-    function_name                       = "${var.name_prefix}-${var.clp_zenv}-logdna-lambda"
+    function_name                       = "${local.name_prefix}-${var.clp_zenv}-logdna-lambda"
     description                         = "Push CloudWatch logs to LogDNA for ${var.clp_zenv}-${local.short_region_name}"
     handler                             = "index.handler"
     runtime                             = "nodejs18.x"
@@ -50,8 +45,8 @@ module lambda {
     cloudwatch_logs_retention_in_days   = 1
 
     environment_variables = {
-        LOGDNA_KEY          = data.aws_ssm_parameter.logdna_ingestion_key.value
-        LOGDNA_TAGS         = "${var.name_prefix}-${var.clp_zenv}"
+        LOGDNA_KEY          = var.logdna_service_key
+        LOGDNA_TAGS         = "${local.name_prefix}-${var.clp_zenv}"
         LOG_RAW_EVENT       = "yes"
     }
 }
@@ -72,3 +67,7 @@ output logdna_view_url {
 output logdna_view_id {
     value = logdna_view.main.id
 }
+
+variable logdna_service_key {}
+variable github_token {}
+variable guthub_owner {}

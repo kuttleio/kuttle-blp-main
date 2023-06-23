@@ -2,7 +2,7 @@
 #       ECS Task Role
 # ------------------------------------
 resource aws_iam_role main {
-  name = "${var.name_prefix}-${var.clp_zenv}"
+  name = "${local.name_prefix}-${var.clp_zenv}"
   tags = var.standard_tags
 
   managed_policy_arns = [
@@ -31,7 +31,7 @@ resource aws_iam_role main {
 }
 
 resource aws_iam_policy sqs {
-  name = "${var.name_prefix}-${var.clp_zenv}-sqs"
+  name = "${local.name_prefix}-${var.clp_zenv}-sqs"
 
   policy = <<POLICY
 {
@@ -54,7 +54,7 @@ POLICY
 }
 
 resource aws_iam_policy s3 {
-  name = "${var.name_prefix}-${var.clp_zenv}-s3"
+  name = "${local.name_prefix}-${var.clp_zenv}-s3"
 
   policy = <<POLICY
 {
@@ -77,7 +77,7 @@ POLICY
 }
 
 resource aws_iam_policy ecs {
-  name = "${var.name_prefix}-${var.clp_zenv}-ecs"
+  name = "${local.name_prefix}-${var.clp_zenv}-ecs"
 
   policy = <<POLICY
 {
@@ -102,7 +102,7 @@ POLICY
 }
 
 resource aws_iam_policy rds {
-  name        = "${var.name_prefix}-${var.clp_zenv}-rds"
+  name        = "${local.name_prefix}-${var.clp_zenv}-rds"
   description = "RDS Policy"
 
   policy = <<POLICY
@@ -121,7 +121,7 @@ POLICY
 }
 
 resource aws_iam_policy pricing {
-  name        = "${var.name_prefix}-${var.clp_zenv}-pricing"
+  name        = "${local.name_prefix}-${var.clp_zenv}-pricing"
   description = "IAM Role Policy"
   policy      = <<POLICY
 {
