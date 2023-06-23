@@ -20,6 +20,9 @@ variable logdna_service_key {}
 variable github_token {}
 variable guthub_owner {}
 
+variable secrets {}
+variable environment {}
+
 variable whitelisted_ips {
   description = "Whitelisted IPs"
   type        = list(string)
