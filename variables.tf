@@ -11,6 +11,9 @@ variable standard_tags {}
 variable security_groups {}
 variable mezmo_account_id {}
 
+variable provider_role_arn {}
+variable aws_provider_session_name {}
+
 variable logdna_service_key {}
 variable github_token {}
 variable guthub_owner {}
