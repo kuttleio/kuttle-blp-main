@@ -11,6 +11,8 @@ variable standard_tags {}
 variable security_groups {}
 variable mezmo_account_id {}
 
+variable s3_tf_artefacts {}
+
 variable provider_role_arn {}
 variable aws_provider_session_name {}
 

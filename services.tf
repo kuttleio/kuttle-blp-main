@@ -25,7 +25,7 @@ locals {
     },
     {
       name  = "S3_TERRAFORM_ARTEFACTS"
-      value = data.terraform_remote_state.s3_tf_artefacts.outputs.id
+      value = var.s3_tf_artefacts
     },
     {
       name  = "GITHUB_REPOSITORY"
@@ -44,7 +44,7 @@ locals {
 resource aws_service_discovery_private_dns_namespace main {
   name        = "${local.name_prefix}-${var.clp_zenv}-ns"
   description = "${local.name_prefix}-${var.clp_zenv} Private Namespace"
-  vpc         = data.terraform_remote_state.vpc.outputs.vpc_id
+  vpc         = var.vpc_id
 }
 
 # ---------------------------------------------------
@@ -59,10 +59,9 @@ module frontend {
   standard_tags           = var.standard_tags
   cluster_name            = module.ecs_fargate.cluster_name
   zenv                    = var.clp_zenv
-  desired_count           = 2
-  vpc_id                  = data.terraform_remote_state.vpc.outputs.vpc_id
-  security_groups         = [data.terraform_remote_state.sg.outputs.clp_backend_sg, data.terraform_remote_state.sg.outputs.clp_bastion_sg, aws_security_group.main.id]
-  subnets                 = data.terraform_remote_state.vpc.outputs.private_subnets
+  vpc_id                  = var.vpc_id
+  security_groups         = var.security_groups
+  subnets                 = var.subnets
   ecr_account_id          = var.account_id
   ecr_region              = var.ecr_region
   aws_lb_arn              = aws_lb.frontend.arn
@@ -70,8 +69,8 @@ module frontend {
   logs_destination_arn    = module.lambda.lambda_function_arn
   domain_name             = var.domain_name
   task_role_arn           = aws_iam_role.main.arn
-  secrets                 = setunion(data.terraform_remote_state.regional_secrets.outputs.regional_secrets)
-  environment             = setunion(data.terraform_remote_state.regional_secrets.outputs.regional_env_vars, local.added_env)
+  secrets                 = setunion(var.secrets)
+  environment             = setunion(var.environment_variables, local.added_env)
 }
 
 module backend {
@@ -83,10 +82,9 @@ module backend {
   standard_tags           = var.standard_tags
   cluster_name            = module.ecs_fargate.cluster_name
   zenv                    = var.clp_zenv
-  desired_count           = 2
-  vpc_id                  = data.terraform_remote_state.vpc.outputs.vpc_id
-  security_groups         = [data.terraform_remote_state.sg.outputs.clp_backend_sg, data.terraform_remote_state.sg.outputs.clp_bastion_sg, aws_security_group.main.id]
-  subnets                 = data.terraform_remote_state.vpc.outputs.private_subnets
+  vpc_id                  = var.vpc_id
+  security_groups         = var.security_groups
+  subnets                 = var.subnets
   ecr_account_id          = var.account_id
   ecr_region              = var.ecr_region
   aws_lb_arn              = aws_lb.backend.arn
@@ -94,8 +92,8 @@ module backend {
   logs_destination_arn    = module.lambda.lambda_function_arn
   domain_name             = var.domain_name
   task_role_arn           = aws_iam_role.main.arn
-  secrets                 = setunion(data.terraform_remote_state.regional_secrets.outputs.regional_secrets)
-  environment             = setunion(data.terraform_remote_state.regional_secrets.outputs.regional_env_vars, local.added_env, [
+  secrets                 = setunion(var.secrets)
+  environment             = setunion(var.environment_variables, local.added_env, [
     {
       name  = "UPDATE_STATUSES_CRON"
       value = "*/10 * * * *"
@@ -116,15 +114,15 @@ module runner {
   standard_tags           = var.standard_tags
   cluster_name            = module.ecs_fargate.cluster_name
   zenv                    = var.clp_zenv
-  vpc_id                  = data.terraform_remote_state.vpc.outputs.vpc_id
-  security_groups         = [data.terraform_remote_state.sg.outputs.clp_backend_sg, data.terraform_remote_state.sg.outputs.clp_bastion_sg, aws_security_group.main.id]
-  subnets                 = data.terraform_remote_state.vpc.outputs.private_subnets
+  vpc_id                  = var.vpc_id
+  security_groups         = var.security_groups
+  subnets                 = var.subnets
   ecr_account_id          = var.account_id
   ecr_region              = var.ecr_region
   logs_destination_arn    = module.lambda.lambda_function_arn
   service_discovery_id    = aws_service_discovery_private_dns_namespace.main.id
   domain_name             = var.domain_name
   task_role_arn           = aws_iam_role.main.arn
-  secrets                 = setunion(data.terraform_remote_state.regional_secrets.outputs.regional_secrets)
-  environment             = setunion(data.terraform_remote_state.regional_secrets.outputs.regional_env_vars, local.added_env)
+  secrets                 = setunion(var.secrets)
+  environment             = setunion(var.environment_variables, local.added_env)
 }

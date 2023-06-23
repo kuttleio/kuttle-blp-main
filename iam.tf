@@ -67,8 +67,8 @@ resource aws_iam_policy s3 {
         "s3:*"
       ],
       "Resource": [
-        "${data.terraform_remote_state.s3_tf_artefacts.outputs.arn}",
-        "${data.terraform_remote_state.s3_tf_artefacts.outputs.arn}/*"
+        "${var.s3_tf_artefacts}",
+        "${var.s3_tf_artefacts}/*"
       ]
     }
   ]

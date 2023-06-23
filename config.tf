@@ -26,10 +26,10 @@ provider aws {
 }
 
 provider logdna {
-  servicekey = data.aws_ssm_parameter.logdna_service_key.value
+  servicekey = var.logdna_service_key
 }
 
 provider github {
-  token = data.aws_ssm_parameter.github_token.value
-  owner = "kuttleio"
+  token = var.github_token
+  owner = var.guthub_owner
 }
