@@ -67,7 +67,3 @@ output logdna_view_url {
 output logdna_view_id {
     value = logdna_view.main.id
 }
-
-variable logdna_service_key {}
-variable github_token {}
-variable guthub_owner {}
