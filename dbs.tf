@@ -111,7 +111,7 @@ module postgres {
     allocated_storage          = local.allocated_storage
     db_name                    = local.db_name
     username                   = local.username
-    password                   = random_password.postgre.result
+    password                   = random_password.postgres.result
     port                       = local.port
     create_db_option_group     = false
     create_db_parameter_group  = false
