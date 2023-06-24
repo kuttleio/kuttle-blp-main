@@ -51,7 +51,7 @@ resource aws_service_discovery_private_dns_namespace main {
 #    Services
 # ---------------------------------------------------
 module frontend {
-  source                  = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.0"
+  source                  = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.1"
   public                  = true
   service_name            = "frontend"
   service_image           = "${aws_ecr_repository.main.repository_url}:frontend"
@@ -74,7 +74,7 @@ module frontend {
 }
 
 module backend {
-  source                  = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.0"
+  source                  = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.1"
   public                  = true
   service_name            = "backend"
   service_image           = "${aws_ecr_repository.main.repository_url}:backend"
@@ -106,7 +106,7 @@ module backend {
 }
 
 module runner {
-  source                  = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.0"
+  source                  = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.1"
   public                  = false
   service_name            = "runner"
   service_image           = "${aws_ecr_repository.main.repository_url}:runner"
