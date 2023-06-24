@@ -131,6 +131,6 @@ resource random_password postgres {
 resource aws_ssm_parameter postgres_connection_string {
     name    = "/${local.name_prefix}/${var.clp_zenv}/postgres_connection_string"
     type    = "SecureString"
-    value   = "postgres://${module.postgres.db_instance_username}:${random_password.postgres.result}@${module.postgres.db_instance_endpoint}/${module.postgres.local.db_name}"
+    value   = "postgres://${module.postgres.db_instance_username}:${random_password.postgres.result}@${module.postgres.db_instance_endpoint}/${local.db_name}"
     tags    = var.standard_tags
 }
