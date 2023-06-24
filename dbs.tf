@@ -102,13 +102,14 @@ module postgres {
     source  = "terraform-aws-modules/rds/aws"
     version = "~> 5.0"
 
-    identifier                 = "${local.name_prefix}-${var.clp_zenv}-PostgreSQL"
+    identifier                 = "${local.name_prefix}-${var.clp_zenv}-postgres"
     engine                     = local.engine
     engine_version             = local.engine_version
     family                     = local.family
     major_engine_version       = local.major_engine_version
     instance_class             = local.instance_class
     allocated_storage          = local.allocated_storage
+    storage_encrypted          = true
     db_name                    = local.db_name
     username                   = local.username
     password                   = random_password.postgres.result
