@@ -1,0 +1,17 @@
+variable vpc_id {}
+variable secrets {}
+variable envvars {}
+variable clp_zenv {}
+variable clp_region {}
+variable clp_account {}
+variable account_id {}
+variable ecr_region {}
+variable domain_name {}
+variable standard_tags {}
+variable ecr_account_id {}
+variable public_subnets {}
+variable private_subnets {}
+variable security_groups {}
+variable s3_tf_artefacts {}
+variable whitelisted_ips {}
+variable mezmo_account_id {}
