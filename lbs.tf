@@ -1,7 +1,3 @@
-locals {
-    allowed_cidr_blocks = ["0.0.0.0/0"]
-}
-
 # ---------------------------------------------------
 #   Security Group for Public LBs
 # ---------------------------------------------------
@@ -22,14 +18,14 @@ resource aws_security_group main {
         from_port     = 80
         to_port       = 80
         protocol      = "tcp"
-        cidr_blocks   = local.allowed_cidr_blocks
+        cidr_blocks   = ["0.0.0.0/0"]
     }
 
     ingress {
         from_port     = 443
         to_port       = 443
         protocol      = "tcp"
-        cidr_blocks   = local.allowed_cidr_blocks
+        cidr_blocks   = ["0.0.0.0/0"]
     }
 }
 
@@ -93,29 +89,36 @@ resource aws_s3_bucket logs {
     force_destroy   = true
     acl             = "private"
     tags            = var.standard_tags
+}
 
-    versioning {
-        enabled = true
+resource aws_s3_bucket_versioning logs {
+    bucket = aws_s3_bucket.logs.id
+    versioning_configuration {
+        status = "Enabled"
     }
+}
 
-    server_side_encryption_configuration {
-        rule {
-            apply_server_side_encryption_by_default {
+resource aws_s3_bucket_server_side_encryption_configuration logs {
+    bucket = aws_s3_bucket.logs.id
+    rule {
+        apply_server_side_encryption_by_default {
             sse_algorithm = "AES256"
-            }
         }
     }
+}
 
-    lifecycle_rule {
-        id      = "log"
-        enabled = true
+resource aws_s3_bucket_lifecycle_configuration logs {
+    bucket = aws_s3_bucket.logs.id
+    rule {
+        id = "logs"
         expiration {
             days = 30
         }
         noncurrent_version_expiration {
-            days = 30
+            noncurrent_days = 30
         }
-    }     
+        status = "Enabled"
+    }
 }
 
 resource aws_s3_bucket_public_access_block logs {
