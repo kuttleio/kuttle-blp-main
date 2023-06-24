@@ -16,9 +16,9 @@ variable private_subnets {}
 variable security_groups {}
 variable s3_tf_artefacts {}
 variable mezmo_account_id {}
-variable provider_role_arn {}
+# variable provider_role_arn {}
 # variable logdna_service_key {}
-variable aws_provider_session_name {}
+# variable aws_provider_session_name {}
 
 variable whitelisted_ips {
   description = "Whitelisted IPs"
