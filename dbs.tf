@@ -1,12 +1,12 @@
 locals {
     engine          = "postgres"
-    engine_version  = "9.5"
+    engine_version  = "15.3"
     cluster_family  = "postgres"
     cluster_size    = 1
     admin_user      = "kuttle"
     db_name         = "manifests"
     db_port         = 5432
-    instance_type   = "db.t4g.medium"
+    instance_type   = "db.t4g.micro"
 }
 
 module postgre {
