@@ -10,3 +10,13 @@ data aws_acm_certificate main {
     statuses    = ["ISSUED"]
     most_recent = true
 }
+
+data aws_ssm_parameter logdna_service_key {
+    name            = "/${local.name_prefix}/logdna_service_key"
+    with_decryption = true
+}
+
+data aws_ssm_parameter github_token {
+    name            = "/${local.name_prefix}/github_token"
+    with_decryption = true
+}

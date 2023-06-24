@@ -8,7 +8,7 @@ variable account_id {}
 variable ecr_region {}
 variable domain_name {}
 variable github_token {}
-variable guthub_owner {}
+variable github_owner {}
 variable ecr_account_id {}
 variable standard_tags {}
 variable public_subnets {}

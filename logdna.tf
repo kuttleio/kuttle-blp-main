@@ -45,7 +45,7 @@ module lambda {
     cloudwatch_logs_retention_in_days   = 1
 
     environment_variables = {
-        LOGDNA_KEY          = var.logdna_service_key
+        LOGDNA_KEY          = data.aws_ssm_parameter.logdna_service_key.value
         LOGDNA_TAGS         = "${local.name_prefix}-${var.clp_zenv}"
         LOG_RAW_EVENT       = "yes"
     }
