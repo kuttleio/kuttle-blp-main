@@ -56,7 +56,7 @@ module frontend {
   service_name            = "frontend"
   service_image           = "${aws_ecr_repository.main.repository_url}:frontend"
   name_prefix             = local.name_prefix
-  standard_tags           = local.standard_tags
+  standard_tags           = var.standard_tags
   cluster_name            = module.ecs_fargate.cluster_name
   zenv                    = var.clp_zenv
   vpc_id                  = var.vpc_id
@@ -79,7 +79,7 @@ module backend {
   service_name            = "backend"
   service_image           = "${aws_ecr_repository.main.repository_url}:backend"
   name_prefix             = local.name_prefix
-  standard_tags           = local.standard_tags
+  standard_tags           = var.standard_tags
   cluster_name            = module.ecs_fargate.cluster_name
   zenv                    = var.clp_zenv
   vpc_id                  = var.vpc_id
@@ -111,7 +111,7 @@ module runner {
   service_name            = "runner"
   service_image           = "${aws_ecr_repository.main.repository_url}:runner"
   name_prefix             = local.name_prefix
-  standard_tags           = local.standard_tags
+  standard_tags           = var.standard_tags
   cluster_name            = module.ecs_fargate.cluster_name
   zenv                    = var.clp_zenv
   vpc_id                  = var.vpc_id
