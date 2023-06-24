@@ -21,7 +21,7 @@ resource github_repository_file frontend {
 
   content = templatefile("${path.module}/cicd.tpl.yaml", {
     service_name  = "frontend"
-    zenv          = var.clp_zenv
+    zenv          = title(var.clp_zenv)
     region        = var.clp_region
     deploy_branch = "master"
     cluster_name  = module.ecs_fargate.cluster_name
