@@ -71,7 +71,13 @@ resource aws_wafv2_ip_set whitelisted_ips {
   addresses         = var.whitelisted_ips
   ip_address_version = "IPV4"  
 }
-resource aws_wafv2_web_acl_association waf_acl_association {
+
+resource aws_wafv2_web_acl_association frontend {
   resource_arn = aws_lb.frontend.arn  
+  web_acl_arn  = aws_wafv2_web_acl.waf_acl.arn
+}
+
+resource aws_wafv2_web_acl_association backend {
+  resource_arn = aws_lb.backend.arn  
   web_acl_arn  = aws_wafv2_web_acl.waf_acl.arn
 }
