@@ -1,7 +1,7 @@
 locals {
     engine          = "postgres"
     engine_version  = "15.3"
-    cluster_family  = "postgres"
+    cluster_family  = "postgres15"
     cluster_size    = 1
     admin_user      = "kuttle"
     db_name         = "manifests"

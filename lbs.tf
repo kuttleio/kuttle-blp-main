@@ -127,11 +127,6 @@ resource aws_s3_bucket_ownership_controls logs {
     }
 }
 
-resource aws_s3_bucket_acl logs {
-    bucket = aws_s3_bucket.logs.id
-    acl    = "private"
-}
-
 resource aws_s3_bucket_public_access_block logs {
     bucket                    = aws_s3_bucket.logs.id
     block_public_acls         = true
