@@ -115,7 +115,7 @@ module postgres {
     port                       = local.port
     create_db_option_group     = false
     create_db_parameter_group  = false
-    db_subnet_group_name       = var.private_subnets
+    subnet_ids                 = var.private_subnets
     vpc_security_group_ids     = var.security_groups
     maintenance_window         = "Sun:00:00-Sun:03:00"
     backup_window              = "04:00-06:00"
