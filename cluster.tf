@@ -71,7 +71,7 @@ EOF
 #    Force New Deployment
 # ---------------------------------------------------
 module force_new_deployment {
-  source          = "github.com/kuttleio/aws_ecs_fargate_force_new_deployment//?ref=1.0.9"
+  source          = "github.com/kuttleio/aws_ecs_fargate_force_new_deployment//?ref=2.0.0"
   ecs_cluster     = module.ecs_fargate.cluster_arn
   name_prefix     = "${local.name_prefix}-${var.clp_zenv}"
   standard_tags   = var.standard_tags

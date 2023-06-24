@@ -87,7 +87,6 @@ resource aws_route53_record backend {
 resource aws_s3_bucket logs {
     bucket          = "${local.name_prefix}-${var.clp_zenv}-lb-logs"
     force_destroy   = true
-    acl             = "private"
     tags            = var.standard_tags
 }
 
@@ -119,6 +118,18 @@ resource aws_s3_bucket_lifecycle_configuration logs {
         }
         status = "Enabled"
     }
+}
+
+resource aws_s3_bucket_ownership_controls logs {
+    bucket = aws_s3_bucket.logs.id
+    rule {
+        object_ownership = "BucketOwnerPreferred"
+    }
+}
+
+resource aws_s3_bucket_acl logs {
+    bucket = aws_s3_bucket.logs.id
+    acl    = "private"
 }
 
 resource aws_s3_bucket_public_access_block logs {
