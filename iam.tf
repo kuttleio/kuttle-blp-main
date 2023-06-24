@@ -3,7 +3,7 @@
 # ------------------------------------
 resource aws_iam_role main {
   name = "${local.name_prefix}-${var.clp_zenv}"
-  tags = var.standard_tags
+  tags = local.standard_tags
 
   managed_policy_arns = [
     aws_iam_policy.sqs.arn,

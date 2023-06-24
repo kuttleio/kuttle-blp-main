@@ -5,7 +5,7 @@ module ecs_fargate {
   source          = "terraform-aws-modules/ecs/aws"
   version         = "4.1.3"
   cluster_name    = "${local.name_prefix}-${var.clp_zenv}"
-  tags            = var.standard_tags
+  tags            = local.standard_tags
   
   cluster_settings = {
     name = "containerInsights"
@@ -74,7 +74,7 @@ module force_new_deployment {
   source          = "github.com/kuttleio/aws_ecs_fargate_force_new_deployment//?ref=1.0.9"
   ecs_cluster     = module.ecs_fargate.cluster_arn
   name_prefix     = "${local.name_prefix}-${var.clp_zenv}"
-  standard_tags   = var.standard_tags
+  standard_tags   = local.standard_tags
   account         = var.clp_account
 }
 

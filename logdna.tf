@@ -41,7 +41,7 @@ module lambda {
     maximum_retry_attempts              = 0
     create_package                      = false
     local_existing_package              = "${path.module}/lambda.zip"
-    tags                                = var.standard_tags
+    tags                                = local.standard_tags
     cloudwatch_logs_retention_in_days   = 1
 
     environment_variables = {

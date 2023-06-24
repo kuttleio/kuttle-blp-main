@@ -5,7 +5,7 @@ resource aws_security_group main {
     name        = "${local.name_prefix}-${var.clp_zenv} LB SG"
     description = "LB Access SG"
     vpc_id      = var.vpc_id
-    tags        = merge(var.standard_tags, tomap({ Name = "${local.name_prefix}-${var.clp_zenv} LB security group" }))
+    tags        = merge(local.standard_tags, tomap({ Name = "${local.name_prefix}-${var.clp_zenv} LB security group" }))
 
     egress {
         from_port     = 0
@@ -44,7 +44,7 @@ resource aws_lb frontend {
         enabled = true
     }
 
-    tags = merge(var.standard_tags, tomap({ Name = "${local.name_prefix}-${var.clp_zenv}-Frontend-LB" }))
+    tags = merge(local.standard_tags, tomap({ Name = "${local.name_prefix}-${var.clp_zenv}-Frontend-LB" }))
 }
 
 resource aws_route53_record frontend {
@@ -70,7 +70,7 @@ resource aws_lb backend {
         enabled = true
     }
 
-    tags = merge(var.standard_tags, tomap({ Name = "${local.name_prefix}-${var.clp_zenv}-Backend-LB" }))
+    tags = merge(local.standard_tags, tomap({ Name = "${local.name_prefix}-${var.clp_zenv}-Backend-LB" }))
 }
 
 resource aws_route53_record backend {
@@ -88,7 +88,7 @@ resource aws_s3_bucket logs {
     bucket          = "${local.name_prefix}-${var.clp_zenv}-lb-logs"
     force_destroy   = true
     acl             = "private"
-    tags            = var.standard_tags
+    tags            = local.standard_tags
 }
 
 resource aws_s3_bucket_versioning logs {

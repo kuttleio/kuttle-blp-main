@@ -25,7 +25,7 @@ module postgre {
     vpc_id          = var.vpc_id
     security_groups = var.security_groups
     subnets         = var.private_subnets
-    tags            = var.standard_tags
+    tags            = local.standard_tags
 }
 
 resource random_password postgre {
@@ -37,7 +37,7 @@ resource aws_ssm_parameter postgre_connection_string {
     name    = "/${local.name_prefix}/${var.clp_zenv}/postgre_connection_string"
     type    = "SecureString"
     value   = "postgres://${module.postgre.master_username}:${random_password.postgre.result}@${module.postgre.endpoint}/${module.postgre.database_name}"
-    tags    = var.standard_tags
+    tags    = local.standard_tags
 }
 
 # ---------------------------------------------------
