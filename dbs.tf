@@ -1,13 +1,9 @@
 # All available versions: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts
 locals {
-#    engine                  = "postgres"
-#    engine_version          = "14"
     family                  = "postgres14"
     major_engine_version    = "14"
     username                = "kuttle"
-#    db_name                 = "environments"
     port                    = 5432
-#    instance_class          = "db.t4g.micro"
     allocated_storage       = 20
 }
 
