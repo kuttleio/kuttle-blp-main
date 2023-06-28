@@ -59,6 +59,8 @@ module frontend {
   standard_tags           = var.standard_tags
   cluster_name            = module.ecs_fargate.cluster_name
   zenv                    = var.clp_zenv
+  container_cpu           = var.frontend_container_cpu
+  container_memory        = var.frontend_container_memory
   vpc_id                  = var.vpc_id
   security_groups         = var.security_groups
   subnets                 = var.private_subnets
@@ -82,6 +84,8 @@ module backend {
   standard_tags           = var.standard_tags
   cluster_name            = module.ecs_fargate.cluster_name
   zenv                    = var.clp_zenv
+  container_cpu           = var.backend_container_cpu
+  container_memory        = var.backend_container_memory
   vpc_id                  = var.vpc_id
   security_groups         = var.security_groups
   subnets                 = var.private_subnets
@@ -114,6 +118,8 @@ module runner {
   standard_tags           = var.standard_tags
   cluster_name            = module.ecs_fargate.cluster_name
   zenv                    = var.clp_zenv
+  container_cpu           = var.runner_container_cpu
+  container_memory        = var.runner_container_memory
   vpc_id                  = var.vpc_id
   security_groups         = var.security_groups
   subnets                 = var.private_subnets
