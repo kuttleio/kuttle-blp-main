@@ -27,6 +27,19 @@ variable database_engine {
 variable database_instance_class {
     default = "db.t4g.micro" 
 }
+variable "database_allocated_storage" {
+    default = "20"
+}
+variable "database_max_allocated_storage" {
+    default = "100"
+}
+variable "database_port" {
+    default = "5432"
+}
+variable "database_username" {
+    default = "kuttle"
+}
+
 
 variable frontend_container_cpu {
     default = "256"

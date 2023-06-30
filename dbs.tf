@@ -1,12 +1,4 @@
 # All available versions: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts
-locals {
-    family                  = "postgres14"
-    major_engine_version    = "14"
-    username                = "kuttle"
-    port                    = 5432
-    allocated_storage       = 20
-}
-
 module postgres {
     source  = "terraform-aws-modules/rds/aws"
     version = "~> 5.0"
@@ -16,13 +8,12 @@ module postgres {
     engine                     = var.database_engine
     engine_version             = var.database_engine_version
     instance_class             = var.database_instance_class
-    family                     = local.family
-    major_engine_version       = local.major_engine_version
-    allocated_storage          = local.allocated_storage
+    allocated_storage          = var.database_allocated_storage
+    max_allocated_storage      = var.database_max_allocated_storage
     storage_encrypted          = true
-    username                   = local.username
+    username                   = var.database_username
     password                   = random_password.postgres.result
-    port                       = local.port
+    port                       = var.database_port
     create_db_option_group     = false
     create_db_parameter_group  = false
     create_db_subnet_group     = true
