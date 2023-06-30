@@ -27,14 +27,6 @@ locals {
       name  = "S3_TERRAFORM_ARTEFACTS"
       value = var.s3_tf_artefacts
     },
-    {
-      name  = "GITHUB_REPOSITORY"
-      value = "your-repo/your-repo-name"
-    },
-    {
-      name  = "GITHUB_ACCESS_TOKEN"
-      value = "your-access-token"
-    },
   ]
 }
 
