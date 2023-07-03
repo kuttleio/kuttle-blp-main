@@ -14,7 +14,7 @@ variable private_subnets {}
 variable security_groups {}
 variable s3_tf_artefacts {}
 variable whitelisted_ips {}
-# variable mezmo_account_id {}
+variable mezmo_account_id {}
 variable database_name {
     default = "environments"
 }
