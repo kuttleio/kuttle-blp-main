@@ -60,7 +60,7 @@ module frontend {
   ecr_region              = var.ecr_region
   aws_lb_arn              = aws_lb.frontend.arn
   aws_lb_certificate_arn  = data.aws_acm_certificate.main.arn
-  logs_destination_arn    = module.lambda.lambda_function_arn
+  logs_destination_arn    = module.logdna.lambda_function_arn
   domain_name             = var.domain_name
   task_role_arn           = aws_iam_role.main.arn
   secrets                 = setunion(var.secrets)
@@ -85,7 +85,7 @@ module backend {
   ecr_region              = var.ecr_region
   aws_lb_arn              = aws_lb.backend.arn
   aws_lb_certificate_arn  = data.aws_acm_certificate.main.arn
-  logs_destination_arn    = module.lambda.lambda_function_arn
+  logs_destination_arn    = module.logdna.lambda_function_arn
   domain_name             = var.domain_name
   task_role_arn           = aws_iam_role.main.arn
   secrets                 = setunion(var.secrets)
@@ -117,7 +117,7 @@ module runner {
   subnets                 = var.private_subnets
   ecr_account_id          = var.account_id
   ecr_region              = var.ecr_region
-  logs_destination_arn    = module.lambda.lambda_function_arn
+  logs_destination_arn    = module.logdna.lambda_function_arn
   service_discovery_id    = aws_service_discovery_private_dns_namespace.main.id
   domain_name             = var.domain_name
   task_role_arn           = aws_iam_role.main.arn
