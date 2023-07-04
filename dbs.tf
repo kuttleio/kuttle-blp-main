@@ -4,7 +4,7 @@ module postgres {
     version                   = "~> 5.0"
 
     count                     = length(var.datastores)
-    identifier                = "${local.name_prefix}-${var.clp_zenv}-postgres"
+    identifier                = "${local.name_prefix}-${var.clp_zenv}-postgres-${count.index}"
     db_name                   = var.datastores[count.index].name
     engine                    = var.datastores[count.index].engine
     engine_version            = var.datastores[count.index].version
@@ -12,7 +12,7 @@ module postgres {
     allocated_storage         = var.database_allocated_storage
     max_allocated_storage     = var.database_max_allocated_storage
     storage_encrypted         = true
-    username                  = random_password.postgres[count.index].result
+    username                  = var.database_username
     password                  = random_password.postgres[count.index].result
     port                      = var.database_port
     create_db_option_group    = false
@@ -34,7 +34,7 @@ resource random_password postgres {
 
 resource aws_ssm_parameter postgres_connection_string {
     count = length(var.datastores)
-    name  = "/${local.name_prefix}/${var.clp_zenv}/postgres_connection_string"
+    name = "/${local.name_prefix}/${var.clp_zenv}/postgres_connection_string-${count.index}"
     type  = "SecureString"
     value = "postgres://${module.postgres[count.index].db_instance_username}:${random_password.postgres[count.index].result}@${module.postgres[count.index].db_instance_endpoint}/${module.postgres[count.index].db_instance_name}"
     tags  = var.standard_tags
