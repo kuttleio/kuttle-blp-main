@@ -42,85 +42,36 @@ resource aws_service_discovery_private_dns_namespace main {
 # ---------------------------------------------------
 #    Services
 # ---------------------------------------------------
-module frontend {
-  source                  = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.1"
-  public                  = true
-  service_name            = "frontend"
-  service_image           = "${aws_ecr_repository.main.repository_url}:frontend"
-  name_prefix             = local.name_prefix
-  standard_tags           = var.standard_tags
-  cluster_name            = module.ecs_fargate.cluster_name
-  zenv                    = var.clp_zenv
-  container_cpu           = var.frontend_container_cpu
-  container_memory        = var.frontend_container_memory
-  vpc_id                  = var.vpc_id
-  security_groups         = var.security_groups
-  subnets                 = var.private_subnets
-  ecr_account_id          = var.account_id
-  ecr_region              = var.ecr_region
-  aws_lb_arn              = aws_lb.frontend.arn
-  aws_lb_certificate_arn  = data.aws_acm_certificate.main.arn
-  logs_destination_arn    = module.logdna.lambda_function_arn
-  domain_name             = var.domain_name
-  task_role_arn           = aws_iam_role.main.arn
-  secrets                 = setunion(var.secrets)
-  environment             = setunion(var.envvars, local.added_env)
-}
+module fargate_service {
+  source        = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.1"
+  service_count = length(var.services)
 
-module backend {
-  source                  = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.1"
-  public                  = true
-  service_name            = "backend"
-  service_image           = "${aws_ecr_repository.main.repository_url}:backend"
-  name_prefix             = local.name_prefix
-  standard_tags           = var.standard_tags
-  cluster_name            = module.ecs_fargate.cluster_name
-  zenv                    = var.clp_zenv
-  container_cpu           = var.backend_container_cpu
-  container_memory        = var.backend_container_memory
-  vpc_id                  = var.vpc_id
-  security_groups         = var.security_groups
-  subnets                 = var.private_subnets
-  ecr_account_id          = var.account_id
-  ecr_region              = var.ecr_region
-  aws_lb_arn              = aws_lb.backend.arn
-  aws_lb_certificate_arn  = data.aws_acm_certificate.main.arn
-  logs_destination_arn    = module.logdna.lambda_function_arn
-  domain_name             = var.domain_name
-  task_role_arn           = aws_iam_role.main.arn
-  secrets                 = setunion(var.secrets)
-  environment             = setunion(var.envvars, local.added_env, [
-    {
-      name  = "UPDATE_STATUSES_CRON"
-      value = "*/10 * * * *"
-    },
-    {
-      name  = "IS_WORKER"
-      value = "1"
-    },
-  ])
-}
+  # Iterate over the services list and pass the necessary parameters
+  for_each = { for idx, service in var.services : idx => service }
 
-module runner {
-  source                  = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.1"
-  public                  = false
-  service_name            = "runner"
-  service_image           = "${aws_ecr_repository.main.repository_url}:runner"
-  name_prefix             = local.name_prefix
-  standard_tags           = var.standard_tags
-  cluster_name            = module.ecs_fargate.cluster_name
-  zenv                    = var.clp_zenv
-  container_cpu           = var.runner_container_cpu
-  container_memory        = var.runner_container_memory
-  vpc_id                  = var.vpc_id
-  security_groups         = var.security_groups
-  subnets                 = var.private_subnets
-  ecr_account_id          = var.account_id
-  ecr_region              = var.ecr_region
-  logs_destination_arn    = module.logdna.lambda_function_arn
-  service_discovery_id    = aws_service_discovery_private_dns_namespace.main.id
-  domain_name             = var.domain_name
-  task_role_arn           = aws_iam_role.main.arn
-  secrets                 = setunion(var.secrets)
-  environment             = setunion(var.envvars, local.added_env)
+  # Service-specific parameters
+  service_name      = each.value.name
+  service_image     = "${aws_ecr_repository.main.repository_url}:${each.value.name}"
+  name_prefix       = local.name_prefix
+  standard_tags     = var.standard_tags
+  cluster_name      = module.ecs_fargate.cluster_name
+  zenv              = var.clp_zenv
+  container_cpu     = each.value.cpu
+  container_memory  = each.value.memory
+  vpc_id            = var.vpc_id
+  security_groups   = var.security_groups
+  subnets           = var.private_subnets
+  ecr_account_id    = var.account_id
+  ecr_region        = var.ecr_region
+  logs_destination_arn = module.logdna.lambda_function_arn
+  domain_name       = var.domain_name
+  task_role_arn     = aws_iam_role.main.arn
+  secrets           = setunion(var.secrets, each.value.secrets)
+  environment       = setunion(var.envvars, each.value.envvars)
+  
+  # Service deployment configuration
+  deploy_method     = each.value.deploy.method
+  git_repo          = each.value.deploy.gitrepo
+  dockerfile        = each.value.deploy.dockerfile
+  branch            = each.value.deploy.branch
 }

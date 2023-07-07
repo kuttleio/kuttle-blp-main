@@ -55,3 +55,20 @@ variable runner_container_cpu {
 variable runner_container_memory {
     default = "512"
 }
+
+
+variable services {
+    type = list(object({
+        name       = string
+        cpu        = number
+        memory     = number
+        public     = bool
+        endpoint   = string
+        deploy     = object({
+            method     = string
+            gitrepo    = string
+            dockerfile = string
+            branch     = string
+        })
+    }))
+}
