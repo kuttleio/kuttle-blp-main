@@ -42,14 +42,15 @@ resource aws_service_discovery_private_dns_namespace main {
 # ---------------------------------------------------
 #    Services
 # ---------------------------------------------------
-module fargate_services {
-  source        = "github.com/kuttleio/aws_ecs_fargate_app?ref=?feature-add-mulitple-service"
+module "fargate_services" {
+  source        = "github.com/kuttleio/aws_ecs_fargate_app?ref=feature-add-mulitple-service"
   service_count = length(var.services)
 
-  # Service-specific parameters
-  for_each = { for idx, service in var.services : idx => service }
+  # Iterate over the services list and pass the necessary parameters
+  for_each = { for idx, service in var.services : service.name => service }
 
-  service_name      = each.value.name
+  # Service-specific parameters
+  service_name      = each.key
   service_image     = "${aws_ecr_repository.main.repository_url}:${each.value.name}"
   name_prefix       = local.name_prefix
   standard_tags     = var.standard_tags
