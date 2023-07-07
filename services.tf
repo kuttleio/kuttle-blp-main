@@ -44,7 +44,7 @@ resource aws_service_discovery_private_dns_namespace main {
 # ---------------------------------------------------
 module fargate_service {
   source        = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.1"
-  service_count = length(var.services)
+  count         = length(var.services)
 
   # Iterate over the services list and pass the necessary parameters
   for_each = { for idx, service in var.services : idx => service }
@@ -70,8 +70,8 @@ module fargate_service {
   environment       = setunion(var.envvars, each.value.envvars)
   
   # Service deployment configuration
-  deploy_method     = each.value.deploy.method
-  git_repo          = each.value.deploy.gitrepo
-  dockerfile        = each.value.deploy.dockerfile
-  branch            = each.value.deploy.branch
+  # deploy_method     = each.value.deploy.method
+  # git_repo          = each.value.deploy.gitrepo
+  # dockerfile        = each.value.deploy.dockerfile
+  # branch            = each.value.deploy.branch
 }
