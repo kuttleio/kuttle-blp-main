@@ -42,12 +42,11 @@ resource aws_service_discovery_private_dns_namespace main {
 # ---------------------------------------------------
 #    Services
 # ---------------------------------------------------
-module "fargate_services" {
+module fargate_service {
   source        = "github.com/kuttleio/aws_ecs_fargate_app?ref=feature-add-mulitple-service"
-  service_count = length(var.services)
-
-  # Iterate over the services list and pass the necessary parameters
-  for_each = { for idx, service in var.services : service.name => service }
+  
+  # Pass the services list directly to for_each
+  for_each      = { for service in var.services : service.name => service }
 
   # Service-specific parameters
   service_name      = each.key
@@ -75,4 +74,5 @@ module "fargate_services" {
   dockerfile        = each.value.deploy.dockerfile
   branch            = each.value.deploy.branch
 }
+
 
