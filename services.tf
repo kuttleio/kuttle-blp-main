@@ -43,7 +43,7 @@ locals {
     subnets              = var.private_subnets
     ecr_account_id       = var.account_id
     ecr_region           = var.ecr_region
-    logs_destination_arn = module.logdna.lambda_function_arn
+    logs_destination_arn = module.lambda.lambda_function_arn
     domain_name          = var.domain_name
     task_role_arn        = aws_iam_role.main.arn
     secrets              = var.secrets
