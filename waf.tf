@@ -1,7 +1,7 @@
 # ---------------------------------------------------
 #   Web Application Firewall (WAF)
 # ---------------------------------------------------
-resource aws_wafv2_web_acl waf_acl {
+resource "aws_wafv2_web_acl" "waf_acl" {
   name        = "${local.name_prefix}-${var.clp_zenv}-WAF-ACL"
   description = "WAF ACL"
 
@@ -64,20 +64,16 @@ resource aws_wafv2_web_acl waf_acl {
   }
 }
 
-resource aws_wafv2_ip_set whitelisted_ips {
-  name              = "${local.name_prefix}-${var.clp_zenv}-Whitelisted-IPs"
-  description       = "Whitelisted IPs"
-  scope             = "REGIONAL"  
-  addresses         = var.whitelisted_ips
-  ip_address_version = "IPV4"  
+resource "aws_wafv2_ip_set" "whitelisted_ips" {
+  name               = "${local.name_prefix}-${var.clp_zenv}-Whitelisted-IPs"
+  description        = "Whitelisted IPs"
+  scope              = "REGIONAL"
+  addresses          = var.whitelisted_ips
+  ip_address_version = "IPV4"
 }
 
-resource aws_wafv2_web_acl_association frontend {
-  resource_arn = aws_lb.frontend.arn  
-  web_acl_arn  = aws_wafv2_web_acl.waf_acl.arn
-}
-
-resource aws_wafv2_web_acl_association backend {
-  resource_arn = aws_lb.backend.arn  
+resource "aws_wafv2_web_acl_association" "acl_association" {
+  for_each     = { for service_name, service_config in var.services : service_name => service_config if service_config.public == true }
+  resource_arn = aws_lb.loadbalancers[each.key].arn
   web_acl_arn  = aws_wafv2_web_acl.waf_acl.arn
 }
