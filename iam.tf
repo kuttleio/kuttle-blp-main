@@ -1,7 +1,7 @@
 # ------------------------------------
 #       ECS Task Role
 # ------------------------------------
-resource aws_iam_role main {
+resource "aws_iam_role" "main" {
   name = "${local.name_prefix}-${var.clp_zenv}"
   tags = var.standard_tags
 
@@ -10,16 +10,16 @@ resource aws_iam_role main {
     aws_iam_policy.s3.arn,
     aws_iam_policy.ecs.arn,
     aws_iam_policy.rds.arn,
-    aws_iam_policy.pricing.arn,  
+    aws_iam_policy.pricing.arn,
   ]
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Action    = "sts:AssumeRole"
-        Effect    = "Allow"
-        Sid       = ""
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
         Principal = {
           Service = [
             "ecs-tasks.amazonaws.com"
@@ -30,7 +30,7 @@ resource aws_iam_role main {
   })
 }
 
-resource aws_iam_policy sqs {
+resource "aws_iam_policy" "sqs" {
   name = "${local.name_prefix}-${var.clp_zenv}-sqs"
 
   policy = <<POLICY
@@ -53,7 +53,7 @@ resource aws_iam_policy sqs {
 POLICY
 }
 
-resource aws_iam_policy s3 {
+resource "aws_iam_policy" "s3" {
   name = "${local.name_prefix}-${var.clp_zenv}-s3"
 
   policy = <<POLICY
@@ -76,7 +76,7 @@ resource aws_iam_policy s3 {
 POLICY
 }
 
-resource aws_iam_policy ecs {
+resource "aws_iam_policy" "ecs" {
   name = "${local.name_prefix}-${var.clp_zenv}-ecs"
 
   policy = <<POLICY
@@ -101,7 +101,7 @@ resource aws_iam_policy ecs {
 POLICY
 }
 
-resource aws_iam_policy rds {
+resource "aws_iam_policy" "rds" {
   name        = "${local.name_prefix}-${var.clp_zenv}-rds"
   description = "RDS Policy"
 
@@ -120,7 +120,7 @@ resource aws_iam_policy rds {
 POLICY
 }
 
-resource aws_iam_policy pricing {
+resource "aws_iam_policy" "pricing" {
   name        = "${local.name_prefix}-${var.clp_zenv}-pricing"
   description = "IAM Role Policy"
   policy      = <<POLICY
