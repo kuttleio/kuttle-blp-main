@@ -25,7 +25,7 @@ resource logdna_view errors {
 # ---------------------------------------------------
 #    LogDNA pushing logs from CloudWatch
 # ---------------------------------------------------
-module lambda {
+module logdna {
     source  = "terraform-aws-modules/lambda/aws"
     version = "~> 4.0"
 
