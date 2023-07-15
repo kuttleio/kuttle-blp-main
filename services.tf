@@ -46,8 +46,8 @@ locals {
     logs_destination_arn = module.logdna.lambda_function_arn
     domain_name          = var.domain_name
     task_role_arn        = aws_iam_role.main.arn
-    secrets              = setunion(var.secrets)
-    environment          = setunion(var.envvars, local.added_env)
+    secrets              = var.secrets
+    environment          = concat(var.envvars, local.added_env)
   }
 
   services = {
