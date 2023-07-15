@@ -16,12 +16,31 @@ variable "s3_tf_artefacts" {}
 variable "whitelisted_ips" {}
 variable "mezmo_account_id" {}
 variable "datastores" {
-  type = list(object({
-    name     = string
-    engine   = string
-    version  = string
-    instance = string
+  type = map(object({
+    name                           = string
+    type                           = string
+    engine                         = string
+    version                        = string
+    class                          = string
+    instance                       = string
+    autoscaling                    = string
+    allocated_storage              = optional(number)
+    database_max_allocated_storage = optional(number)
+    database_username              = optional(string)
+    database_port                  = optional(number)
+    tags                           = optional(map(string))
   }))
+  default = {
+    postgres1 = {
+      name        = "postgre"
+      type        = "SQL"
+      engine      = "postgres"
+      version     = "15.2"
+      class       = "burstable"
+      instance    = "t4g.micro"
+      autoscaling = "enabled"
+    }
+  }
 }
 variable "database_allocated_storage" {
   default = "20"
