@@ -50,7 +50,7 @@ module logdna {
 
 resource aws_lambda_permission allow_cloudwatch {
     action        = "lambda:InvokeFunction"
-    function_name = module.lambda.lambda_function_name
+    function_name = module.logdna.lambda_function_name
     principal     = "logs.${data.aws_region.current.name}.amazonaws.com"
 }
 
