@@ -15,13 +15,27 @@ variable security_groups {}
 variable s3_tf_artefacts {}
 variable whitelisted_ips {}
 variable mezmo_account_id {}
-variable datastores {
-    type = list(object({
-        name        = string
-        engine      = string
-        version     = string
-        instance    = string
-    }))
+variable "datastores" {
+  type = map(object({
+    name        = string
+    type        = string
+    engine      = string
+    version     = string
+    class       = string
+    instance    = string
+    autoscaling = string
+  }))
+  default = {
+    postgres1 = {
+      name        = "postgre"
+      type        = "SQL"
+      engine      = "postgres"
+      version     = "15.2"
+      class       = "burstable"
+      instance    = "t4g.micro"
+      autoscaling = "enabled"
+    }
+  }
 }
 variable "database_allocated_storage" {
     default = "20"
