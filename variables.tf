@@ -17,13 +17,18 @@ variable "whitelisted_ips" {}
 variable "mezmo_account_id" {}
 variable "datastores" {
   type = map(object({
-    name        = string
-    type        = string
-    engine      = string
-    version     = string
-    class       = string
-    instance    = string
-    autoscaling = string
+    name                           = string
+    type                           = string
+    engine                         = string
+    version                        = string
+    class                          = string
+    instance                       = string
+    autoscaling                    = string
+    allocated_storage              = optional(number)
+    database_max_allocated_storage = optional(number)
+    database_username              = optional(string)
+    database_port                  = optional(number)
+    tags                           = optional(map(string))
   }))
   default = {
     postgres1 = {
