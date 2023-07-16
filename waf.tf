@@ -82,7 +82,7 @@ resource "aws_wafv2_ip_set" "whitelisted_ips" {
 locals {
   acl_associations = flatten([
     for service_name, service_config in var.services : [
-      for acl_name in keys(var.acls) : {
+      for acl_name in keys(var.whitelisted_ips) : {
         service = service_name
         acl     = acl_name
       }
