@@ -65,10 +65,11 @@ resource "aws_wafv2_web_acl" "waf_acl" {
 }
 
 resource "aws_wafv2_ip_set" "whitelisted_ips" {
-  name               = "${local.name_prefix}-${var.clp_zenv}-Whitelisted-IPs"
+  for_each           = var.whitelisted_ips
+  name               = "${local.name_prefix}-${var.clp_zenv}-Whitelisted-${title(each.key)}"
   description        = "Whitelisted IPs"
   scope              = "REGIONAL"
-  addresses          = var.whitelisted_ips
+  addresses          = each.value.addresses
   ip_address_version = "IPV4"
 }
 
