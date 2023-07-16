@@ -32,22 +32,11 @@ resource "aws_service_discovery_private_dns_namespace" "main" {
 # ---------------------------------------------------
 locals {
   default_common_settings = {
-    public               = false
-    type                 = "non-frontend"
-    name_prefix          = local.name_prefix
-    standard_tags        = var.standard_tags
-    cluster_name         = module.ecs_fargate.cluster_name
-    zenv                 = var.clp_zenv
-    vpc_id               = var.vpc_id
-    security_groups      = var.security_groups
-    subnets              = var.private_subnets
-    ecr_account_id       = var.account_id
-    ecr_region           = var.ecr_region
-    logs_destination_arn = module.logdna.lambda_function_arn
-    domain_name          = var.domain_name
-    task_role_arn        = aws_iam_role.main.arn
-    secrets              = var.secrets
-    environment          = concat(var.envvars, local.added_env)
+    public        = false
+    type          = "non-frontend"
+    environment   = concat(var.envvars, local.added_env)
+    secrets       = var.secrets
+    standard_tags = var.standard_tags
   }
 
   services = {
@@ -60,7 +49,9 @@ locals {
         container_memory       = service_config.memory,
         aws_lb_arn             = service_config.public ? aws_lb.loadbalancers[service_name].arn : null
         aws_lb_certificate_arn = service_config.public ? data.aws_acm_certificate.main.arn : null
-        environment            = contains(keys(service_config), "environment") ? concat(local.default_common_settings.environment, service_config.environment) : local.default_common_settings.environment
+        environment            = service_config.environment != null && length(service_config.environment) > 0 ? concat(local.default_common_settings.environment, service_config.environment) : local.default_common_settings.environment
+        secrets                = service_config.secrets != null ? concat(local.default_common_settings.secrets, service_config.secrets) : local.default_common_settings.secrets
+        standard_tags          = service_config.tags != null ? merge(local.default_common_settings.standard_tags, service_config.standard_tags) : local.default_common_settings.standard_tags
       },
       service_config,
     )
@@ -73,23 +64,23 @@ module "services" {
   public                 = each.value.public
   service_name           = each.value.service_name
   service_image          = each.value.service_image
-  name_prefix            = each.value.name_prefix
+  name_prefix            = local.name_prefix
   standard_tags          = each.value.standard_tags
-  cluster_name           = each.value.cluster_name
-  zenv                   = each.value.zenv
+  cluster_name           = module.ecs_fargate.cluster_name
+  zenv                   = var.clp_zenv
   container_cpu          = each.value.container_cpu
   container_memory       = each.value.container_memory
-  vpc_id                 = each.value.vpc_id
-  security_groups        = each.value.security_groups
-  subnets                = each.value.private_subnets
-  ecr_account_id         = each.value.account_id
-  ecr_region             = each.value.ecr_region
+  vpc_id                 = var.vpc_id
+  security_groups        = var.security_groups
+  subnets                = var.private_subnets
+  ecr_account_id         = var.account_id
+  ecr_region             = var.ecr_region
   aws_lb_arn             = try(each.value.aws_lb_arn, "")
   aws_lb_certificate_arn = try(each.value.aws_lb_certificate_arn, "")
   service_discovery_id   = try(each.value.service_discovery_id, "")
-  logs_destination_arn   = each.value.logs_destination_arn
-  domain_name            = each.value.domain_name
-  task_role_arn          = each.value.task_role_arn
+  logs_destination_arn   = module.logdna.lambda_function_arn
+  domain_name            = var.domain_name
+  task_role_arn          = aws_iam_role.main.arn
   secrets                = each.value.secrets
   environment            = each.value.environment
 }

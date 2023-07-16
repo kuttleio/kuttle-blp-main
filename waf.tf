@@ -11,49 +11,55 @@ resource "aws_wafv2_web_acl" "waf_acl" {
     allow {}
   }
 
-  rule {
-    name     = "whitelisted-ips-rule"
-    priority = 1
+  dynamic "rule" {
+    for_each = var.whitelisted_ips
+    content {
+      name     = "whitelisted-ips-rule-${rule.key}"
+      priority = 1
 
-    action {
-      allow {}
-    }
-
-    statement {
-      ip_set_reference_statement {
-        arn = aws_wafv2_ip_set.whitelisted_ips.arn
+      action {
+        allow {}
       }
-    }
 
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "WhitelistedIPsRule"
-      sampled_requests_enabled   = true
+      statement {
+        ip_set_reference_statement {
+          arn = aws_wafv2_ip_set.whitelisted_ips[rule.key].arn
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "WhitelistedIPsRule"
+        sampled_requests_enabled   = true
+      }
     }
   }
 
-  rule {
-    name     = "block-non-whitelisted-ips"
-    priority = 2
+  dynamic "rule" {
+    for_each = var.whitelisted_ips
+    content {
+      name     = "block-non-whitelisted-ips-${rule.key}"
+      priority = 2
 
-    action {
-      block {}
-    }
+      action {
+        block {}
+      }
 
-    statement {
-      not_statement {
-        statement {
-          ip_set_reference_statement {
-            arn = aws_wafv2_ip_set.whitelisted_ips.arn
+      statement {
+        not_statement {
+          statement {
+            ip_set_reference_statement {
+              arn = aws_wafv2_ip_set.whitelisted_ips[rule.key].arn
+            }
           }
         }
       }
-    }
 
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "BlockNonWhitelistedIPs"
-      sampled_requests_enabled   = true
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "BlockNonWhitelistedIPsRule"
+        sampled_requests_enabled   = true
+      }
     }
   }
 
@@ -65,10 +71,11 @@ resource "aws_wafv2_web_acl" "waf_acl" {
 }
 
 resource "aws_wafv2_ip_set" "whitelisted_ips" {
-  name               = "${local.name_prefix}-${var.clp_zenv}-Whitelisted-IPs"
+  for_each           = var.whitelisted_ips
+  name               = "${local.name_prefix}-${var.clp_zenv}-Whitelisted-${title(each.key)}"
   description        = "Whitelisted IPs"
   scope              = "REGIONAL"
-  addresses          = var.whitelisted_ips
+  addresses          = each.value.addresses
   ip_address_version = "IPV4"
 }
 

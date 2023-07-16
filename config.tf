@@ -6,7 +6,7 @@ terraform {
       version = "~> 5.0"
     }
     logdna = {
-      source = "logdna/logdna"
+      source  = "logdna/logdna"
       version = "~> 1.0"
     }
   }
@@ -17,6 +17,6 @@ provider "github" {
   owner = "kuttleio"
 }
 
-provider logdna {
+provider "logdna" {
   servicekey = data.aws_ssm_parameter.logdna_service_key.value
 }

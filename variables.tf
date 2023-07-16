@@ -13,7 +13,11 @@ variable "public_subnets" {}
 variable "private_subnets" {}
 variable "security_groups" {}
 variable "s3_tf_artefacts" {}
-variable "whitelisted_ips" {}
+variable "whitelisted_ips" {
+  type = map(object({
+    addresses = list(string)
+  }))
+}
 variable "mezmo_account_id" {}
 variable "datastores" {
   type = map(object({
@@ -65,6 +69,8 @@ variable "services" {
     memory               = number
     service_discovery_id = string
     environment          = list(object({ name = string, value = string }))
+    secrets              = optional(list(object({ name = string, valueFrom = string })))
+    tags                 = optional(map(string))
   }))
   default = {
     frontend = {
