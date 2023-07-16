@@ -49,6 +49,7 @@ locals {
         container_memory       = service_config.memory,
         aws_lb_arn             = service_config.public ? aws_lb.loadbalancers[service_name].arn : null
         aws_lb_certificate_arn = service_config.public ? data.aws_acm_certificate.main.arn : null
+        service_discovery_id   = service_config.public ? null : aws_service_discovery_private_dns_namespace.main.id
         environment            = service_config.environment != null && length(service_config.environment) > 0 ? concat(local.default_common_settings.environment, service_config.environment) : local.default_common_settings.environment
         secrets                = service_config.secrets != null ? concat(local.default_common_settings.secrets, service_config.secrets) : local.default_common_settings.secrets
         standard_tags          = service_config.tags != null ? merge(local.default_common_settings.standard_tags, service_config.standard_tags) : local.default_common_settings.standard_tags
