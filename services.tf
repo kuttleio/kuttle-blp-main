@@ -32,11 +32,11 @@ resource "aws_service_discovery_private_dns_namespace" "main" {
 # ---------------------------------------------------
 locals {
   default_common_settings = {
-    public      = false
-    type        = "non-frontend"
-    environment = concat(var.envvars, local.added_env)
-    secrets     = var.secrets
-    tags        = var.standard_tags
+    public        = false
+    type          = "non-frontend"
+    environment   = concat(var.envvars, local.added_env)
+    secrets       = var.secrets
+    standard_tags = var.standard_tags
   }
 
   services = {
@@ -51,7 +51,7 @@ locals {
         aws_lb_certificate_arn = service_config.public ? data.aws_acm_certificate.main.arn : null
         environment            = service_config.environment != null && length(service_config.environment) > 0 ? concat(local.default_common_settings.environment, service_config.environment) : local.default_common_settings.environment
         secrets                = service_config.secrets != null ? concat(local.default_common_settings.secrets, service_config.secrets) : local.default_common_settings.secrets
-        tags                   = service_config.tags != null ? merge(local.default_common_settings.tags, service_config.tags) : local.default_common_settings.tags
+        standard_tags          = service_config.tags != null ? merge(local.default_common_settings.standard_tags, service_config.standard_tags) : local.default_common_settings.standard_tags
       },
       service_config,
     )
