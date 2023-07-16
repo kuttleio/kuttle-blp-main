@@ -79,8 +79,19 @@ resource "aws_wafv2_ip_set" "whitelisted_ips" {
   ip_address_version = "IPV4"
 }
 
+locals {
+  acl_associations = flatten([
+    for service_name, service_config in var.services : [
+      for acl_name in keys(var.acls) : {
+        service = service_name
+        acl     = acl_name
+      }
+    ] if service_config.public == true
+  ])
+}
+
 resource "aws_wafv2_web_acl_association" "acl_association" {
-  for_each     = { for service_name, service_config in var.services : service_name => service_config if service_config.public == true }
-  resource_arn = aws_lb.loadbalancers[each.key].arn
-  web_acl_arn  = aws_wafv2_web_acl.waf_acl.arn
+  for_each     = { for assoc in local.acl_associations : "${assoc.service}-${assoc.acl}" => assoc }
+  resource_arn = aws_lb.loadbalancers[each.value.service].arn
+  web_acl_arn  = aws_wafv2_web_acl.waf_acl[each.value.acl].arn
 }
