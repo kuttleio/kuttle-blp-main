@@ -43,16 +43,13 @@ locals {
     for service_name, service_config in var.services : service_name => merge(
       local.default_common_settings,
       {
-        service_name           = service_name,
-        service_image          = "${aws_ecr_repository.main.repository_url}:${service_name}",
-        container_cpu          = service_config.cpu,
-        container_memory       = service_config.memory,
-        aws_lb_arn             = service_config.public ? aws_lb.loadbalancers[service_name].arn : null
-        aws_lb_certificate_arn = service_config.public ? data.aws_acm_certificate.main.arn : null
-        service_discovery_id   = service_config.public ? "" : aws_service_discovery_private_dns_namespace.main.id
-        environment            = service_config.environment != null && length(service_config.environment) > 0 ? concat(local.default_common_settings.environment, service_config.environment) : local.default_common_settings.environment
-        secrets                = service_config.secrets != null ? concat(local.default_common_settings.secrets, service_config.secrets) : local.default_common_settings.secrets
-        standard_tags          = service_config.tags != null ? merge(local.default_common_settings.standard_tags, service_config.standard_tags) : local.default_common_settings.standard_tags
+        service_name     = service_name,
+        service_image    = "${aws_ecr_repository.main.repository_url}:${service_name}",
+        container_cpu    = service_config.cpu,
+        container_memory = service_config.memory,
+        environment      = service_config.environment != null && length(service_config.environment) > 0 ? concat(local.default_common_settings.environment, service_config.environment) : local.default_common_settings.environment
+        secrets          = service_config.secrets != null ? concat(local.default_common_settings.secrets, service_config.secrets) : local.default_common_settings.secrets
+        standard_tags    = service_config.tags != null ? merge(local.default_common_settings.standard_tags, service_config.standard_tags) : local.default_common_settings.standard_tags
       },
       service_config,
     )
@@ -76,9 +73,9 @@ module "services" {
   subnets                = var.private_subnets
   ecr_account_id         = var.account_id
   ecr_region             = var.ecr_region
-  aws_lb_arn             = try(each.value.aws_lb_arn, "")
-  aws_lb_certificate_arn = try(each.value.aws_lb_certificate_arn, "")
-  service_discovery_id   = try(each.value.service_discovery_id, "")
+  aws_lb_arn             = each.value.public ? aws_lb.loadbalancers[each.value.service_name].arn : ""
+  aws_lb_certificate_arn = each.value.public ? data.aws_acm_certificate.main.arn : ""
+  service_discovery_id   = each.value.public ? "" : aws_service_discovery_private_dns_namespace.main.id
   logs_destination_arn   = module.logdna.lambda_function_arn
   domain_name            = var.domain_name
   task_role_arn          = aws_iam_role.main.arn
