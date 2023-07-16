@@ -8,12 +8,12 @@ module "postgres" {
   engine                    = each.value.engine
   engine_version            = each.value.version
   instance_class            = each.value.instance
-  allocated_storage         = try(each.value.allocated_storage, var.database_allocated_storage)
+  allocated_storage         = coalesce(try(each.value.database_allocated_storage, var.database_allocated_storage), var.database_allocated_storage)
   max_allocated_storage     = each.value.autoscaling == "enabled" ? try(each.value.database_max_allocated_storage, var.database_max_allocated_storage) : 0
   storage_encrypted         = true
-  username                  = try(each.value.database_username, var.database_username)
+  username                  = coalesce(try(each.value.database_username, var.database_username), var.database_username)
   password                  = random_password.postgres[each.key].result
-  port                      = try(each.value.database_port, var.database_port)
+  port                      = coalesce(try(each.value.database_port, var.database_port), var.database_port)
   create_db_option_group    = false
   create_db_parameter_group = false
   create_db_subnet_group    = true

@@ -33,7 +33,7 @@ variable "datastores" {
     class                          = string
     instance                       = string
     autoscaling                    = string
-    allocated_storage              = optional(number)
+    database_allocated_storage     = optional(number)
     database_max_allocated_storage = optional(number)
     database_username              = optional(string)
     database_port                  = optional(number)
@@ -42,15 +42,19 @@ variable "datastores" {
   default = {}
 }
 variable "database_allocated_storage" {
-  default = "20"
+  type    = number
+  default = 20
 }
 variable "database_max_allocated_storage" {
-  default = "100"
+  type    = number
+  default = 100
 }
 variable "database_port" {
-  default = "5432"
+  type    = number
+  default = 5432
 }
 variable "database_username" {
+  type    = string
   default = "kuttle"
 }
 
