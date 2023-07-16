@@ -17,6 +17,11 @@ variable "whitelisted_ips" {
   type = map(object({
     addresses = list(string)
   }))
+  default = {
+    default = {
+      addresses = ["0.0.0.0/1", "128.0.0.0/1"]
+    }
+  }
 }
 variable "mezmo_account_id" {}
 variable "datastores" {
