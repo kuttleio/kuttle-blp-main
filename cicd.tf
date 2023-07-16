@@ -5,7 +5,7 @@ data "github_repository" "repositories" {
 
 resource "github_repository_file" "respository_files" {
   for_each            = var.services
-  repository          = data.github_repository.repositories[each.key].full_name
+  repository          = data.github_repository.repositories[each.key].name
   branch              = "master"
   file                = ".github/workflows/${local.name_prefix}-${var.clp_zenv}.yaml"
   commit_message      = "Add CICD: delivery from /master to ${var.clp_zenv}"
