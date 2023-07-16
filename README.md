@@ -102,10 +102,10 @@
 | <a name="output_cluster_arn"></a> [cluster\_arn](#output\_cluster\_arn) | ECS Fargate Cluster ARN |
 | <a name="output_cluster_id"></a> [cluster\_id](#output\_cluster\_id) | ECS Fargate Cluster ID |
 | <a name="output_cluster_name"></a> [cluster\_name](#output\_cluster\_name) | ECS Fargate Cluster Name |
-| <a name="output_ecr_repo_url"></a> [ecr\_repo\_url](#output\_ecr\_repo\_url) | n/a |
+| <a name="output_ecr_repo_url"></a> [ecr\_repo\_url](#output\_ecr\_repo\_url) | ECR repository URL |
 | <a name="output_fqdn"></a> [fqdn](#output\_fqdn) | n/a |
 | <a name="output_logdna_view_id"></a> [logdna\_view\_id](#output\_logdna\_view\_id) | n/a |
-| <a name="output_logdna_view_url"></a> [logdna\_view\_url](#output\_logdna\_view\_url) | --------------------------------------------------- Mezmo (LogDNA) - Outputs --------------------------------------------------- |
+| <a name="output_logdna_view_url"></a> [logdna\_view\_url](#output\_logdna\_view\_url) | Mezmo (LogDNA) View URL |
 | <a name="output_public_lb_arn"></a> [public\_lb\_arn](#output\_public\_lb\_arn) | Public LB ARN |
 | <a name="output_url"></a> [url](#output\_url) | n/a |
 <!-- END_TF_DOCS -->
