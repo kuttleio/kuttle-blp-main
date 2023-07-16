@@ -14,7 +14,7 @@ resource "aws_wafv2_web_acl" "waf_acl" {
   dynamic "rule" {
     for_each = var.whitelisted_ips
     content {
-      name     = "whitelisted-ips-rule-${each.key}"
+      name     = "whitelisted-ips-rule-${rule.key}"
       priority = 1
 
       action {
@@ -23,7 +23,7 @@ resource "aws_wafv2_web_acl" "waf_acl" {
 
       statement {
         ip_set_reference_statement {
-          arn = aws_wafv2_ip_set.whitelisted_ips[each.key].arn
+          arn = aws_wafv2_ip_set.whitelisted_ips[rule.key].arn
         }
       }
 
@@ -38,7 +38,7 @@ resource "aws_wafv2_web_acl" "waf_acl" {
   dynamic "rule" {
     for_each = var.whitelisted_ips
     content {
-      name     = "block-non-whitelisted-ips-${each.key}"
+      name     = "block-non-whitelisted-ips-${rule.key}"
       priority = 2
 
       action {
@@ -49,7 +49,7 @@ resource "aws_wafv2_web_acl" "waf_acl" {
         not_statement {
           statement {
             ip_set_reference_statement {
-              arn = aws_wafv2_ip_set.whitelisted_ips[each.key].arn
+              arn = aws_wafv2_ip_set.whitelisted_ips[rule.key].arn
             }
           }
         }
