@@ -65,6 +65,8 @@ variable "services" {
     memory               = number
     service_discovery_id = string
     environment          = list(object({ name = string, value = string }))
+    secrets              = optional(list(object({ name = string, value = string })))
+    tags                 = optional(map(string))
   }))
   default = {
     frontend = {
