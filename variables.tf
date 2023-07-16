@@ -39,17 +39,7 @@ variable "datastores" {
     database_port                  = optional(number)
     tags                           = optional(map(string))
   }))
-  default = {
-    postgres1 = {
-      name        = "postgre"
-      type        = "SQL"
-      engine      = "postgres"
-      version     = "15.2"
-      class       = "burstable"
-      instance    = "t4g.micro"
-      autoscaling = "enabled"
-    }
-  }
+  default = {}
 }
 variable "database_allocated_storage" {
   default = "20"
