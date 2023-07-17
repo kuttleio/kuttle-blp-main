@@ -58,6 +58,30 @@ variable "database_username" {
   default = "kuttle"
 }
 
+variable "s3_buckets" {
+  description = "Map of S3 buckets"
+  type = map(object({
+    versioning              = optional(map(string))
+    block_public_acls       = optional(bool)
+    block_public_policy     = optional(bool)
+    ignore_public_acls      = optional(bool)
+    restrict_public_buckets = optional(bool)
+    attach_policy           = optional(bool)
+    policy = optional(object(
+      {
+        principals = optional(list(string))
+        actions    = optional(list(string))
+      }
+    ))
+    policy_json      = optional(string)
+    lifecycle_rule   = optional(list(any))
+    object_ownership = optional(string)
+    force_destroy    = optional(bool)
+    tags             = optional(map(string))
+  }))
+  default = {}
+}
+
 variable "services" {
   description = "Map of service names and configurations"
   type = map(object({
