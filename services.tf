@@ -58,7 +58,7 @@ locals {
 
 module "services" {
   for_each               = local.services
-  source                 = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.0"
+  source                 = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.1"
   public                 = each.value.public
   service_name           = each.value.service_name
   service_image          = each.value.service_image
