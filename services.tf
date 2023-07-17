@@ -34,7 +34,7 @@ locals {
   default_common_settings = {
     public        = false
     type          = "non-frontend"
-    environment   = concat(var.envvars, local.added_env)
+    environment   = concat(tolist(var.envvars), local.added_env)
     secrets       = var.secrets
     standard_tags = var.standard_tags
   }
