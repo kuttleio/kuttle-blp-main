@@ -12,9 +12,9 @@ resource "aws_wafv2_web_acl" "waf_acl" {
   }
 
   dynamic "rule" {
-    for_each = var.whitelisted_ips
+    for_each = toset(var.ipwhitelist)
     content {
-      name     = "whitelisted-ips-rule-${rule.key}"
+      name     = "whitelisted-ips-rule-${rule.value}"
       priority = 1
 
       action {
@@ -36,9 +36,9 @@ resource "aws_wafv2_web_acl" "waf_acl" {
   }
 
   dynamic "rule" {
-    for_each = var.whitelisted_ips
+    for_each = toset(var.ipwhitelist)
     content {
-      name     = "block-non-whitelisted-ips-${rule.key}"
+      name     = "block-non-whitelisted-ips-${rule.value}"
       priority = 2
 
       action {
@@ -71,11 +71,11 @@ resource "aws_wafv2_web_acl" "waf_acl" {
 }
 
 resource "aws_wafv2_ip_set" "whitelisted_ips" {
-  for_each           = var.whitelisted_ips
-  name               = "${local.name_prefix}-${var.clp_zenv}-Whitelisted-${title(each.key)}"
+  for_each           = toset(var.ipwhitelist)
+  name               = "${local.name_prefix}-${var.clp_zenv}-Whitelisted-${each.value}"
   description        = "Whitelisted IPs"
   scope              = "REGIONAL"
-  addresses          = each.value.addresses
+  addresses          = each.value
   ip_address_version = "IPV4"
 }
 
