@@ -24,6 +24,7 @@
 | <a name="module_force_new_deployment"></a> [force\_new\_deployment](#module\_force\_new\_deployment) | github.com/kuttleio/aws_ecs_fargate_force_new_deployment// | 2.0.0 |
 | <a name="module_logdna"></a> [logdna](#module\_logdna) | terraform-aws-modules/lambda/aws | ~> 4.0 |
 | <a name="module_postgres"></a> [postgres](#module\_postgres) | terraform-aws-modules/rds/aws | ~> 5.0 |
+| <a name="module_s3_bucket"></a> [s3\_bucket](#module\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 3.0 |
 | <a name="module_services"></a> [services](#module\_services) | github.com/kuttleio/aws_ecs_fargate_app | 1.1.1 |
 
 ## Resources
@@ -61,6 +62,7 @@
 | [random_password.postgres](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [aws_acm_certificate.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/acm_certificate) | data source |
 | [aws_elb_service_account.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/elb_service_account) | data source |
+| [aws_iam_policy_document.policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_route53_zone.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
 | [aws_ssm_parameter.github_token](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
@@ -75,25 +77,26 @@
 | <a name="input_clp_account"></a> [clp\_account](#input\_clp\_account) | n/a | `any` | n/a | yes |
 | <a name="input_clp_region"></a> [clp\_region](#input\_clp\_region) | n/a | `any` | n/a | yes |
 | <a name="input_clp_zenv"></a> [clp\_zenv](#input\_clp\_zenv) | n/a | `any` | n/a | yes |
-| <a name="input_database_allocated_storage"></a> [database\_allocated\_storage](#input\_database\_allocated\_storage) | n/a | `string` | `"20"` | no |
-| <a name="input_database_max_allocated_storage"></a> [database\_max\_allocated\_storage](#input\_database\_max\_allocated\_storage) | n/a | `string` | `"100"` | no |
-| <a name="input_database_port"></a> [database\_port](#input\_database\_port) | n/a | `string` | `"5432"` | no |
+| <a name="input_database_allocated_storage"></a> [database\_allocated\_storage](#input\_database\_allocated\_storage) | n/a | `number` | `20` | no |
+| <a name="input_database_max_allocated_storage"></a> [database\_max\_allocated\_storage](#input\_database\_max\_allocated\_storage) | n/a | `number` | `100` | no |
+| <a name="input_database_port"></a> [database\_port](#input\_database\_port) | n/a | `number` | `5432` | no |
 | <a name="input_database_username"></a> [database\_username](#input\_database\_username) | n/a | `string` | `"kuttle"` | no |
-| <a name="input_datastores"></a> [datastores](#input\_datastores) | n/a | <pre>map(object({<br>    name                           = string<br>    type                           = string<br>    engine                         = string<br>    version                        = string<br>    class                          = string<br>    instance                       = string<br>    autoscaling                    = string<br>    allocated_storage              = optional(number)<br>    database_max_allocated_storage = optional(number)<br>    database_username              = optional(string)<br>    database_port                  = optional(number)<br>    tags                           = optional(map(string))<br>  }))</pre> | <pre>{<br>  "postgres1": {<br>    "autoscaling": "enabled",<br>    "class": "burstable",<br>    "engine": "postgres",<br>    "instance": "t4g.micro",<br>    "name": "postgre",<br>    "type": "SQL",<br>    "version": "15.2"<br>  }<br>}</pre> | no |
+| <a name="input_datastores"></a> [datastores](#input\_datastores) | n/a | <pre>map(object({<br>    name                           = string<br>    type                           = string<br>    engine                         = string<br>    version                        = string<br>    class                          = string<br>    instance                       = string<br>    autoscaling                    = string<br>    database_allocated_storage     = optional(number)<br>    database_max_allocated_storage = optional(number)<br>    database_username              = optional(string)<br>    database_port                  = optional(number)<br>    tags                           = optional(map(string))<br>  }))</pre> | `{}` | no |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | n/a | `any` | n/a | yes |
 | <a name="input_ecr_account_id"></a> [ecr\_account\_id](#input\_ecr\_account\_id) | n/a | `any` | n/a | yes |
 | <a name="input_ecr_region"></a> [ecr\_region](#input\_ecr\_region) | n/a | `any` | n/a | yes |
 | <a name="input_envvars"></a> [envvars](#input\_envvars) | n/a | `any` | n/a | yes |
+| <a name="input_ipwhitelist"></a> [ipwhitelist](#input\_ipwhitelist) | n/a | `list(string)` | <pre>[<br>  "0.0.0.0/1",<br>  "128.0.0.0/1"<br>]</pre> | no |
 | <a name="input_mezmo_account_id"></a> [mezmo\_account\_id](#input\_mezmo\_account\_id) | n/a | `any` | n/a | yes |
 | <a name="input_private_subnets"></a> [private\_subnets](#input\_private\_subnets) | n/a | `any` | n/a | yes |
 | <a name="input_public_subnets"></a> [public\_subnets](#input\_public\_subnets) | n/a | `any` | n/a | yes |
+| <a name="input_s3_buckets"></a> [s3\_buckets](#input\_s3\_buckets) | Map of S3 buckets | <pre>map(object({<br>    versioning              = optional(map(string))<br>    block_public_acls       = optional(bool)<br>    block_public_policy     = optional(bool)<br>    ignore_public_acls      = optional(bool)<br>    restrict_public_buckets = optional(bool)<br>    attach_policy           = optional(bool)<br>    policy = optional(object(<br>      {<br>        principals = optional(list(string))<br>        actions    = optional(list(string))<br>      }<br>    ))<br>    policy_json      = optional(string)<br>    lifecycle_rule   = optional(list(any))<br>    object_ownership = optional(string)<br>    force_destroy    = optional(bool)<br>    tags             = optional(map(string))<br>  }))</pre> | `{}` | no |
 | <a name="input_s3_tf_artefacts"></a> [s3\_tf\_artefacts](#input\_s3\_tf\_artefacts) | n/a | `any` | n/a | yes |
 | <a name="input_secrets"></a> [secrets](#input\_secrets) | n/a | `any` | n/a | yes |
 | <a name="input_security_groups"></a> [security\_groups](#input\_security\_groups) | n/a | `any` | n/a | yes |
 | <a name="input_services"></a> [services](#input\_services) | Map of service names and configurations | <pre>map(object({<br>    public               = bool<br>    type                 = string<br>    name                 = string<br>    cpu                  = number<br>    memory               = number<br>    service_discovery_id = string<br>    environment          = list(object({ name = string, value = string }))<br>    secrets              = optional(list(object({ name = string, valueFrom = string })))<br>    tags                 = optional(map(string))<br>  }))</pre> | <pre>{<br>  "backend": {<br>    "cpu": 256,<br>    "environment": [<br>      {<br>        "name": "UPDATE_STATUSES_CRON",<br>        "value": "*/10 * * * *"<br>      },<br>      {<br>        "name": "IS_WORKER",<br>        "value": "1"<br>      }<br>    ],<br>    "memory": 512,<br>    "name": "backend",<br>    "public": true,<br>    "service_discovery_id": "",<br>    "type": "non-frontend"<br>  },<br>  "frontend": {<br>    "cpu": 256,<br>    "environment": [],<br>    "memory": 512,<br>    "name": "frontend",<br>    "public": true,<br>    "service_discovery_id": "",<br>    "type": "frontend"<br>  },<br>  "runner": {<br>    "cpu": 256,<br>    "environment": [],<br>    "memory": 512,<br>    "name": "runner",<br>    "public": false,<br>    "service_discovery_id": "",<br>    "type": "non-frontend"<br>  }<br>}</pre> | no |
 | <a name="input_standard_tags"></a> [standard\_tags](#input\_standard\_tags) | n/a | `any` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | n/a | `any` | n/a | yes |
-| <a name="input_whitelisted_ips"></a> [whitelisted\_ips](#input\_whitelisted\_ips) | n/a | <pre>map(object({<br>    addresses = list(string)<br>  }))</pre> | <pre>{<br>  "default": {<br>    "addresses": [<br>      "0.0.0.0/1",<br>      "128.0.0.0/1"<br>    ]<br>  }<br>}</pre> | no |
 
 ## Outputs
 
