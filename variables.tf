@@ -13,14 +13,17 @@ variable "public_subnets" {}
 variable "private_subnets" {}
 variable "security_groups" {}
 variable "s3_tf_artefacts" {}
-variable "whitelisted_ips" {
-  type = map(object({
-    addresses = list(string)
-  }))
-  default = {
-    default = {
-      addresses = ["0.0.0.0/1", "128.0.0.0/1"]
-    }
+variable "ipwhitelist" {
+  type = list(string)
+  default = [
+    "0.0.0.0/1",
+    "128.0.0.0/1"
+  ]
+  validation {
+    condition = alltrue([
+      for ip in var.ipwhitelist : can(cidrnetmask(ip))
+    ])
+    error_message = "Invalid CIDR block."
   }
 }
 variable "mezmo_account_id" {}
