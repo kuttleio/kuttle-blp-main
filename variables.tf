@@ -21,9 +21,9 @@ variable "ipwhitelist" {
   ]
   validation {
     condition = alltrue([
-      for ip in var.ipwhitelist : can(cidrnetmask(ip))
+      for ip in var.ipwhitelist : can(cidrnetmask(ip)) 
     ])
-    error_message = "Invalid CIDR block."
+    error_message = "Invalid CIDR block format. Expected format: x.x.x.x/x"
   }
 }
 variable "mezmo_account_id" {}
