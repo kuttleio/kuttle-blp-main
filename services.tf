@@ -32,24 +32,29 @@ resource "aws_service_discovery_private_dns_namespace" "main" {
 # ---------------------------------------------------
 locals {
   default_common_settings = {
-    public        = false
-    type          = "non-frontend"
-    environment   = concat((var.envvars), local.added_env) # concat(tolist(var.envvars), local.added_env)
-    secrets       = var.secrets
-    standard_tags = var.standard_tags
+    public      = false
+    environment = concat((var.envvars), local.added_env) # concat(tolist(var.envvars), local.added_env)
+    secrets     = var.secrets
+    tags        = var.standard_tags
   }
 
   services = {
     for service_name, service_config in var.services : service_name => merge(
       local.default_common_settings,
       {
-        service_name     = service_name,
-        service_image    = "${aws_ecr_repository.main.repository_url}:${service_name}",
-        container_cpu    = service_config.cpu,
-        container_memory = service_config.memory,
-        environment      = service_config.environment != null && length(service_config.environment) > 0 ? concat(local.default_common_settings.environment, service_config.environment) : local.default_common_settings.environment
-        secrets          = service_config.secrets != null ? concat(local.default_common_settings.secrets, service_config.secrets) : local.default_common_settings.secrets
-        standard_tags    = service_config.tags != null ? merge(local.default_common_settings.standard_tags, service_config.standard_tags) : local.default_common_settings.standard_tags
+        name                 = service_config.name
+        cpu                  = service_config.cpu
+        memory               = service_config.memory
+        endpoint             = coalesce(service_config.endpoint, "")
+        command              = coalesce(service_config.command, null)
+        deploy_gitrepo       = service_config.deploy.gitrepo
+        deploy_dockefilepath = coalesce(service_config.deploy.dockerfilepath, "Dockerfile")
+        deploy_branch        = coalesce(service_config.deploy.branch, "master")
+        deploy_method        = coalesce(service_config.deploy.method, null)
+        deploy_version       = coalesce(service_config.deploy.version, null)
+        environment          = service_config.environment != null && length(service_config.environment) > 0 ? concat(local.default_common_settings.environment, service_config.environment) : local.default_common_settings.environment
+        secrets              = service_config.secrets != null ? concat(local.default_common_settings.secrets, service_config.secrets) : local.default_common_settings.secrets
+        standard_tags        = service_config.tags != null ? merge(local.default_common_settings.tags, service_config.tags) : local.default_common_settings.tags
       },
       service_config,
     )
@@ -60,14 +65,14 @@ module "services" {
   for_each               = local.services
   source                 = "github.com/kuttleio/aws_ecs_fargate_app?ref=1.1.1"
   public                 = each.value.public
-  service_name           = each.value.service_name
-  service_image          = each.value.service_image
+  service_name           = each.value.name
+  service_image          = "${aws_ecr_repository.main.repository_url}:${each.value.name}"
   name_prefix            = local.name_prefix
-  standard_tags          = each.value.standard_tags
+  standard_tags          = each.value.tags
   cluster_name           = module.ecs_fargate.cluster_name
   zenv                   = var.clp_zenv
-  container_cpu          = each.value.container_cpu
-  container_memory       = each.value.container_memory
+  container_cpu          = each.value.cpu
+  container_memory       = each.value.memory
   vpc_id                 = var.vpc_id
   security_groups        = var.security_groups
   subnets                = var.private_subnets
@@ -81,5 +86,6 @@ module "services" {
   task_role_arn          = aws_iam_role.main.arn
   secrets                = each.value.secrets
   environment            = each.value.environment
+  command                = each.value.command
 }
 

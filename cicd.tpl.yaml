@@ -12,6 +12,7 @@ env:
   REGION:  ${ region }
   SERVICE: ${ service_name }
   CLUSTER: ${ cluster_name }
+  DOCKERFILE_PATH: ${ dockefile_path }
 
 jobs:
   all-in-one:
@@ -37,7 +38,7 @@ jobs:
           docker build \
             --build-arg DATABASE_URL=$${{ secrets.DATABASE_URL }} \
             -t $ECR_REGISTRY_DEV/$CLUSTER:$SERVICE \
-            -f Dockerfile .
+            -f $DOCKERFILE_PATH .
           docker push $ECR_REGISTRY_DEV/$CLUSTER:$SERVICE
       - name: ECS New Force Deployment
         run: |
