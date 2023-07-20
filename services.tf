@@ -46,7 +46,7 @@ locals {
         cpu                  = service_config.cpu
         memory               = service_config.memory
         endpoint             = try(coalesce(service_config.endpoint, ""), "")
-        command              = try(coalesce(service_config.command, null), null)
+        command              = coalesce(service_config.command, [])
         deploy_gitrepo       = service_config.deploy.gitrepo
         deploy_dockefilepath = coalesce(service_config.deploy.dockerfilepath, "Dockerfile")
         deploy_branch        = coalesce(service_config.deploy.branch, "master")
@@ -78,7 +78,7 @@ module "services" {
   subnets                = var.private_subnets
   ecr_account_id         = var.account_id
   ecr_region             = var.ecr_region
-  aws_lb_arn             = each.value.public ? aws_lb.loadbalancers[each.value.service_name].arn : ""
+  aws_lb_arn             = each.value.public ? aws_lb.loadbalancers[each.value.name].arn : ""
   aws_lb_certificate_arn = each.value.public ? data.aws_acm_certificate.main.arn : ""
   service_discovery_id   = each.value.public ? "" : aws_service_discovery_private_dns_namespace.main.id
   logs_destination_arn   = module.logdna.lambda_function_arn

@@ -93,7 +93,7 @@ variable "services" {
     cpu         = number
     memory      = number
     endpoint    = optional(string)
-    command     = optional(string)
+    command     = optional(list(string))
     environment = optional(list(object({ name = string, value = string })))
     deploy = object({
       gitrepo        = string
