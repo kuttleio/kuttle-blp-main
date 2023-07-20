@@ -75,7 +75,7 @@ resource "aws_wafv2_ip_set" "whitelisted_ips" {
   name               = "${local.name_prefix}-${var.clp_zenv}-Whitelisted-${each.value}"
   description        = "Whitelisted IPs"
   scope              = "REGIONAL"
-  addresses          = each.key
+  addresses          = [ each.key ]
   ip_address_version = "IPV4"
 }
 
