@@ -45,13 +45,13 @@ locals {
         name                 = service_config.name
         cpu                  = service_config.cpu
         memory               = service_config.memory
-        endpoint             = coalesce(service_config.endpoint, "")
-        command              = coalesce(service_config.command, null)
+        endpoint             = try(coalesce(service_config.endpoint, ""), "")
+        command              = try(coalesce(service_config.command, null), null)
         deploy_gitrepo       = service_config.deploy.gitrepo
         deploy_dockefilepath = coalesce(service_config.deploy.dockerfilepath, "Dockerfile")
         deploy_branch        = coalesce(service_config.deploy.branch, "master")
-        deploy_method        = coalesce(service_config.deploy.method, null)
-        deploy_version       = coalesce(service_config.deploy.version, null)
+        deploy_method        = try(coalesce(service_config.deploy.method, null), null)
+        deploy_version       = try(coalesce(service_config.deploy.version, null), null)
         environment          = service_config.environment != null && length(service_config.environment) > 0 ? concat(local.default_common_settings.environment, service_config.environment) : local.default_common_settings.environment
         secrets              = service_config.secrets != null ? concat(local.default_common_settings.secrets, service_config.secrets) : local.default_common_settings.secrets
         standard_tags        = service_config.tags != null ? merge(local.default_common_settings.tags, service_config.tags) : local.default_common_settings.tags
