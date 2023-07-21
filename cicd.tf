@@ -17,7 +17,7 @@ resource "github_repository_file" "respository_files" {
     service_name   = each.value.name
     zenv           = title(var.clp_zenv)
     region         = var.clp_region
-    deploy_branch  = each.value.deploy_branch
+    deploy_branch  = each.value.deploy.branch
     cluster_name   = module.ecs_fargate.cluster_name
     dockefile_path = each.value.deploy_dockefilepath
   })
