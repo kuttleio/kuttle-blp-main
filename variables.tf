@@ -21,7 +21,7 @@ variable "ipwhitelist" {
   ]
   validation {
     condition = alltrue([
-      for ip in var.ipwhitelist : can(cidrnetmask(ip)) 
+      for ip in var.ipwhitelist : can(cidrnetmask(ip))
     ])
     error_message = "Invalid CIDR block format. Expected format: x.x.x.x/x"
   }
@@ -88,52 +88,34 @@ variable "s3_buckets" {
 variable "services" {
   description = "Map of service names and configurations"
   type = map(object({
-    public               = bool
-    type                 = string
-    name                 = string
-    cpu                  = number
-    memory               = number
-    service_discovery_id = string
-    environment          = list(object({ name = string, value = string }))
-    secrets              = optional(list(object({ name = string, valueFrom = string })))
-    tags                 = optional(map(string))
+    public      = bool
+    name        = string
+    cpu         = number
+    memory      = number
+    endpoint    = optional(string)
+    command     = optional(list(string))
+    environment = optional(list(object({ name = string, value = string })))
+    deploy = object({
+      gitrepo        = string
+      dockerfilepath = optional(string)
+      method         = optional(string)
+      branch         = optional(string)
+      version        = optional(string)
+    })
+    secrets = optional(list(object({ name = string, valueFrom = string })))
+    tags    = optional(map(string))
   }))
   default = {
     frontend = {
-      public               = true
-      type                 = "frontend"
-      name                 = "frontend"
-      cpu                  = 256
-      memory               = 512
-      service_discovery_id = ""
-      environment          = []
-    },
-    backend = {
-      public               = true
-      type                 = "non-frontend"
-      name                 = "backend"
-      cpu                  = 256
-      memory               = 512
-      service_discovery_id = ""
-      environment = [
-        {
-          name  = "UPDATE_STATUSES_CRON"
-          value = "*/10 * * * *"
-        },
-        {
-          name  = "IS_WORKER"
-          value = "1"
-        },
-      ]
-    },
-    runner = {
-      public               = false
-      type                 = "non-frontend"
-      name                 = "runner"
-      cpu                  = 256
-      memory               = 512
-      service_discovery_id = ""
-      environment          = []
+      public      = true
+      name        = "frontend"
+      cpu         = 256
+      memory      = 512
+      endpoint    = ""
+      environment = []
+      deploy = {
+        gitrepo = "kuttleio/frontend"
+      }
     }
   }
 }

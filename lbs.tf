@@ -51,7 +51,7 @@ resource "aws_lb" "loadbalancers" {
 resource "aws_route53_record" "records" {
   for_each = { for service_name, service_config in var.services : service_name => service_config if service_config.public == true }
   zone_id  = data.aws_route53_zone.main.zone_id
-  name     = each.value.type == "frontend" ? "${var.clp_zenv}." : "${var.clp_zenv}-${each.key}."
+  name     = try(coalesce(each.value.endpoint, ""), "") == "" ? "${var.clp_zenv}." : "${var.clp_zenv}-${each.value.endpoint}."
   type     = "CNAME"
   ttl      = 300
   records  = [aws_lb.loadbalancers[each.key].dns_name]
