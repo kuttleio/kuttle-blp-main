@@ -95,6 +95,8 @@ variable "services" {
     endpoint    = optional(string)
     command     = optional(list(string))
     environment = optional(list(object({ name = string, value = string })))
+    secrets     = optional(list(object({ name = string, valueFrom = string })))
+    tags        = optional(map(string))
     deploy = object({
       gitrepo        = string
       dockerfilepath = optional(string)
@@ -102,8 +104,6 @@ variable "services" {
       branch         = optional(string)
       version        = optional(string)
     })
-    secrets = optional(list(object({ name = string, valueFrom = string })))
-    tags    = optional(map(string))
   }))
   default = {
     frontend = {
@@ -114,7 +114,38 @@ variable "services" {
       endpoint    = ""
       environment = []
       deploy = {
-        gitrepo = "kuttleio/frontend"
+        gitrepo        = "kuttleio/frontend"
+        dockerfilepath = "/"
+        method         = "from_branch"
+        branch         = "master"
+      }
+    }
+    backend = {
+      public      = true
+      name        = "backend"
+      cpu         = 256
+      memory      = 512
+      endpoint    = "backend"
+      environment = []
+      deploy = {
+        gitrepo        = "kuttleio/backend"
+        dockerfilepath = "/"
+        method         = "from_branch"
+        branch         = "master"
+      }
+    }
+    runner = {
+      public      = false
+      name        = "runner"
+      cpu         = 256
+      memory      = 512
+      endpoint    = ""
+      environment = []
+      deploy = {
+        gitrepo        = "kuttleio/runner"
+        dockerfilepath = "/"
+        method         = "from_branch"
+        branch         = "master"
       }
     }
   }
