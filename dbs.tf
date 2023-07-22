@@ -14,7 +14,7 @@ locals {
 module "database" {
   source                    = "terraform-aws-modules/rds/aws"
   version                   = "~> 5.0"
-  for_each                  = var.datastores
+  for_each                  = { for datastore_name, datastore_config in var.datastores : datastore_name => datastore_config if datastore_config.type == "sql" }
   identifier                = "${local.name_prefix}-${var.clp_zenv}-${each.value.engine}-${each.key}"
   db_name                   = each.value.name
   engine                    = each.value.engine
@@ -38,13 +38,13 @@ module "database" {
 }
 
 resource "random_password" "database" {
-  for_each = var.datastores
+  for_each = { for datastore_name, datastore_config in var.datastores : datastore_name => datastore_config if datastore_config.type == "sql" }
   length   = 24
   special  = false
 }
 
 resource "aws_ssm_parameter" "database_connection_string" {
-  for_each = var.datastores
+  for_each = { for datastore_name, datastore_config in var.datastores : datastore_name => datastore_config if datastore_config.type == "sql" }
   name     = "/${local.name_prefix}/${var.clp_zenv}/${each.value.engine}_connection_string-${each.key}"
   type     = "SecureString"
   value    = "${each.value.engine}://${module.database[each.key].db_instance_username}:${random_password.database[each.key].result}@${module.database[each.key].db_instance_endpoint}/${module.database[each.key].db_instance_name}"
