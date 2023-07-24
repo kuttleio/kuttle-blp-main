@@ -119,3 +119,15 @@ variable "services" {
     }
   }
 }
+
+variable "mongodb_atlas_org_id" {
+  description = "MongoDB Atlas Organization ID"
+  type        = string
+  default     = ""
+}
+
+variable "auth_database_name" {
+  description = "MongoDB Atlas Authentication Database Name"
+  type        = string
+  default     = "admin"
+}
