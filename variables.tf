@@ -52,10 +52,6 @@ variable "database_max_allocated_storage" {
   type    = number
   default = 100
 }
-variable "database_port" {
-  type    = number
-  default = 5432
-}
 variable "database_username" {
   type    = string
   default = "kuttle"

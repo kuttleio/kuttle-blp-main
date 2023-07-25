@@ -79,7 +79,6 @@
 | <a name="input_clp_zenv"></a> [clp\_zenv](#input\_clp\_zenv) | n/a | `any` | n/a | yes |
 | <a name="input_database_allocated_storage"></a> [database\_allocated\_storage](#input\_database\_allocated\_storage) | n/a | `number` | `20` | no |
 | <a name="input_database_max_allocated_storage"></a> [database\_max\_allocated\_storage](#input\_database\_max\_allocated\_storage) | n/a | `number` | `100` | no |
-| <a name="input_database_port"></a> [database\_port](#input\_database\_port) | n/a | `number` | `5432` | no |
 | <a name="input_database_username"></a> [database\_username](#input\_database\_username) | n/a | `string` | `"kuttle"` | no |
 | <a name="input_datastores"></a> [datastores](#input\_datastores) | n/a | <pre>map(object({<br>    name                           = string<br>    type                           = string<br>    engine                         = string<br>    version                        = string<br>    class                          = string<br>    instance                       = string<br>    autoscaling                    = string<br>    database_allocated_storage     = optional(number)<br>    database_max_allocated_storage = optional(number)<br>    database_username              = optional(string)<br>    database_port                  = optional(number)<br>    tags                           = optional(map(string))<br>  }))</pre> | `{}` | no |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | n/a | `any` | n/a | yes |
