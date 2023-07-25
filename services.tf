@@ -52,7 +52,7 @@ locals {
         deploy_branch        = coalesce(service_config.deploy.branch, "master")
         deploy_method        = try(coalesce(service_config.deploy.method, null), null)
         deploy_version       = try(coalesce(service_config.deploy.version, null), null)
-        environment          = service_config.environment != null && length(service_config.environment) > 0 ? concat(flatten([local.default_common_settings.environment]), service_config.environment) : local.default_common_settings.environment
+        environment          = service_config.environment != null && length(service_config.environment) > 0 ? concat(tolist(local.default_common_settings.environment), [for env in service_config.environment : { name = env.name, value = env.value }]) : local.default_common_settings.environment
         secrets              = service_config.secrets != null ? concat(local.default_common_settings.secrets, service_config.secrets) : local.default_common_settings.secrets
         standard_tags        = service_config.tags != null ? merge(local.default_common_settings.tags, service_config.tags) : local.default_common_settings.tags
       },
