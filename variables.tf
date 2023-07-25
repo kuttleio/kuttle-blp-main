@@ -115,7 +115,7 @@ variable "services" {
       environment = []
       deploy = {
         gitrepo        = "kuttleio/frontend"
-        dockerfilepath = "/"
+        dockerfilepath = "Dockerfile"
         method         = "from_branch"
         branch         = "master"
       }
@@ -129,7 +129,7 @@ variable "services" {
       environment = []
       deploy = {
         gitrepo        = "kuttleio/backend"
-        dockerfilepath = "/"
+        dockerfilepath = "Dockerfile"
         method         = "from_branch"
         branch         = "master"
       }
@@ -143,7 +143,7 @@ variable "services" {
       environment = []
       deploy = {
         gitrepo        = "kuttleio/runner"
-        dockerfilepath = "/"
+        dockerfilepath = "Dockerfile"
         method         = "from_branch"
         branch         = "master"
       }
