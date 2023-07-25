@@ -1,14 +1,14 @@
 data "github_repository" "repositories" {
-  for_each  = var.services
+  for_each  = local.services
   full_name = each.value.deploy.gitrepo
 }
 
 resource "github_repository_file" "respository_files" {
   for_each            = local.services
   repository          = data.github_repository.repositories[each.key].name
-  branch              = "master"
+  branch              = each.value.deploy.deploy_branch
   file                = ".github/workflows/${local.name_prefix}-${var.clp_zenv}.yaml"
-  commit_message      = "Add CICD: delivery from /master to ${var.clp_zenv}"
+  commit_message      = "Add CICD: delivery from ${each.value.deploy_branch} to ${var.clp_zenv}"
   commit_author       = "kuttle-bot"
   commit_email        = "kbot@ktl.ai"
   overwrite_on_create = true
