@@ -146,3 +146,52 @@ variable "services" {
     }
   }
 }
+
+variable "mongodb_atlas_org_id" {
+  description = "MongoDB Atlas Organization ID"
+  type        = string
+  default     = ""
+}
+
+variable "auth_database_name" {
+  description = "MongoDB Atlas Authentication Database Name"
+  type        = string
+  default     = "admin"
+}
+
+variable "mongodb_atlas" {
+  description = "Map of MongoDB Atlas configurations"
+  type = map(object({
+    project_name = string
+    cluster1 = optional(object({
+      cluster_type                 = optional(string)
+      provider_name                = optional(string)
+      backing_provider_name        = optional(string)
+      provider_region_name         = optional(string)
+      provider_instance_size_name  = optional(string)
+      mongo_db_major_version       = optional(string)
+      auto_scaling_disk_gb_enabled = optional(bool)
+      replication_specs = optional(map(object({
+        num_shards      = optional(number)
+        region_name     = optional(string)
+        electable_nodes = optional(number)
+        priority        = optional(number)
+        read_only_nodes = optional(number)
+      })))
+    }))
+    users = optional(list(string))
+  }))
+  default = {}
+}
+
+variable "vpn_ip_list" {
+  description = "List of VPN IPs"
+  type        = list(string)
+  default     = []
+}
+
+variable "nat_public_ips" {
+  description = "List of NAT Gateway IPs"
+  type        = list(string)
+  default     = []
+}

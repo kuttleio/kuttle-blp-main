@@ -9,7 +9,14 @@ terraform {
       source  = "logdna/logdna"
       version = "~> 1.0"
     }
+    mongodbatlas = {
+      source  = "mongodb/mongodbatlas"
+      version = "1.10.2"
+    }
   }
+}
+
+provider "mongodbatlas" {
 }
 
 provider "github" {
