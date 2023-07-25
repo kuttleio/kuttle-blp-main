@@ -52,10 +52,6 @@ variable "database_max_allocated_storage" {
   type    = number
   default = 100
 }
-variable "database_port" {
-  type    = number
-  default = 5432
-}
 variable "database_username" {
   type    = string
   default = "kuttle"
@@ -95,6 +91,8 @@ variable "services" {
     endpoint    = optional(string)
     command     = optional(list(string))
     environment = optional(list(object({ name = string, value = string })))
+    secrets     = optional(list(object({ name = string, valueFrom = string })))
+    tags        = optional(map(string))
     deploy = object({
       gitrepo        = string
       dockerfilepath = optional(string)
@@ -102,8 +100,6 @@ variable "services" {
       branch         = optional(string)
       version        = optional(string)
     })
-    secrets = optional(list(object({ name = string, valueFrom = string })))
-    tags    = optional(map(string))
   }))
   default = {
     frontend = {
@@ -114,7 +110,38 @@ variable "services" {
       endpoint    = ""
       environment = []
       deploy = {
-        gitrepo = "kuttleio/frontend"
+        gitrepo        = "kuttleio/frontend"
+        dockerfilepath = "Dockerfile"
+        method         = "from_branch"
+        branch         = "master"
+      }
+    }
+    backend = {
+      public      = true
+      name        = "backend"
+      cpu         = 256
+      memory      = 512
+      endpoint    = "backend"
+      environment = []
+      deploy = {
+        gitrepo        = "kuttleio/backend"
+        dockerfilepath = "Dockerfile"
+        method         = "from_branch"
+        branch         = "master"
+      }
+    }
+    runner = {
+      public      = false
+      name        = "runner"
+      cpu         = 256
+      memory      = 512
+      endpoint    = ""
+      environment = []
+      deploy = {
+        gitrepo        = "kuttleio/runner"
+        dockerfilepath = "Dockerfile"
+        method         = "from_branch"
+        branch         = "master"
       }
     }
   }

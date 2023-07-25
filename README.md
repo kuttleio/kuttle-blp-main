@@ -20,10 +20,10 @@
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_database"></a> [database](#module\_database) | terraform-aws-modules/rds/aws | ~> 5.0 |
 | <a name="module_ecs_fargate"></a> [ecs\_fargate](#module\_ecs\_fargate) | terraform-aws-modules/ecs/aws | 4.1.3 |
 | <a name="module_force_new_deployment"></a> [force\_new\_deployment](#module\_force\_new\_deployment) | github.com/kuttleio/aws_ecs_fargate_force_new_deployment// | 2.0.0 |
 | <a name="module_logdna"></a> [logdna](#module\_logdna) | terraform-aws-modules/lambda/aws | ~> 4.0 |
-| <a name="module_postgres"></a> [postgres](#module\_postgres) | terraform-aws-modules/rds/aws | ~> 5.0 |
 | <a name="module_s3_bucket"></a> [s3\_bucket](#module\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 3.0 |
 | <a name="module_services"></a> [services](#module\_services) | github.com/kuttleio/aws_ecs_fargate_app | 1.1.1 |
 
@@ -53,13 +53,13 @@
 | [aws_service_discovery_private_dns_namespace.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/service_discovery_private_dns_namespace) | resource |
 | [aws_sqs_queue.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue) | resource |
 | [aws_sqs_queue.reversed](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue) | resource |
-| [aws_ssm_parameter.postgres_connection_string](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter) | resource |
+| [aws_ssm_parameter.database_connection_string](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter) | resource |
 | [aws_wafv2_ip_set.whitelisted_ips](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_ip_set) | resource |
 | [aws_wafv2_web_acl.waf_acl](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl) | resource |
 | [aws_wafv2_web_acl_association.acl_association](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_association) | resource |
 | [github_repository_file.respository_files](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
 | [logdna_view.main](https://registry.terraform.io/providers/logdna/logdna/latest/docs/resources/view) | resource |
-| [random_password.postgres](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
+| [random_password.database](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [aws_acm_certificate.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/acm_certificate) | data source |
 | [aws_elb_service_account.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/elb_service_account) | data source |
 | [aws_iam_policy_document.policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -79,7 +79,6 @@
 | <a name="input_clp_zenv"></a> [clp\_zenv](#input\_clp\_zenv) | n/a | `any` | n/a | yes |
 | <a name="input_database_allocated_storage"></a> [database\_allocated\_storage](#input\_database\_allocated\_storage) | n/a | `number` | `20` | no |
 | <a name="input_database_max_allocated_storage"></a> [database\_max\_allocated\_storage](#input\_database\_max\_allocated\_storage) | n/a | `number` | `100` | no |
-| <a name="input_database_port"></a> [database\_port](#input\_database\_port) | n/a | `number` | `5432` | no |
 | <a name="input_database_username"></a> [database\_username](#input\_database\_username) | n/a | `string` | `"kuttle"` | no |
 | <a name="input_datastores"></a> [datastores](#input\_datastores) | n/a | <pre>map(object({<br>    name                           = string<br>    type                           = string<br>    engine                         = string<br>    version                        = string<br>    class                          = string<br>    instance                       = string<br>    autoscaling                    = string<br>    database_allocated_storage     = optional(number)<br>    database_max_allocated_storage = optional(number)<br>    database_username              = optional(string)<br>    database_port                  = optional(number)<br>    tags                           = optional(map(string))<br>  }))</pre> | `{}` | no |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | n/a | `any` | n/a | yes |
@@ -94,7 +93,7 @@
 | <a name="input_s3_tf_artefacts"></a> [s3\_tf\_artefacts](#input\_s3\_tf\_artefacts) | n/a | `any` | n/a | yes |
 | <a name="input_secrets"></a> [secrets](#input\_secrets) | n/a | `any` | n/a | yes |
 | <a name="input_security_groups"></a> [security\_groups](#input\_security\_groups) | n/a | `any` | n/a | yes |
-| <a name="input_services"></a> [services](#input\_services) | Map of service names and configurations | <pre>map(object({<br>    public      = bool<br>    name        = string<br>    cpu         = number<br>    memory      = number<br>    endpoint    = optional(string)<br>    command     = optional(list(string))<br>    environment = optional(list(object({ name = string, value = string })))<br>    deploy = object({<br>      gitrepo        = string<br>      dockerfilepath = optional(string)<br>      method         = optional(string)<br>      branch         = optional(string)<br>      version        = optional(string)<br>    })<br>    secrets = optional(list(object({ name = string, valueFrom = string })))<br>    tags    = optional(map(string))<br>  }))</pre> | <pre>{<br>  "frontend": {<br>    "cpu": 256,<br>    "deploy": {<br>      "gitrepo": "kuttleio/frontend"<br>    },<br>    "endpoint": "",<br>    "environment": [],<br>    "memory": 512,<br>    "name": "frontend",<br>    "public": true<br>  }<br>}</pre> | no |
+| <a name="input_services"></a> [services](#input\_services) | Map of service names and configurations | <pre>map(object({<br>    public      = bool<br>    name        = string<br>    cpu         = number<br>    memory      = number<br>    endpoint    = optional(string)<br>    command     = optional(list(string))<br>    environment = optional(list(object({ name = string, value = string })))<br>    secrets     = optional(list(object({ name = string, valueFrom = string })))<br>    tags        = optional(map(string))<br>    deploy = object({<br>      gitrepo        = string<br>      dockerfilepath = optional(string)<br>      method         = optional(string)<br>      branch         = optional(string)<br>      version        = optional(string)<br>    })<br>  }))</pre> | <pre>{<br>  "backend": {<br>    "cpu": 256,<br>    "deploy": {<br>      "branch": "master",<br>      "dockerfilepath": "Dockerfile",<br>      "gitrepo": "kuttleio/backend",<br>      "method": "from_branch"<br>    },<br>    "endpoint": "backend",<br>    "environment": [],<br>    "memory": 512,<br>    "name": "backend",<br>    "public": true<br>  },<br>  "frontend": {<br>    "cpu": 256,<br>    "deploy": {<br>      "branch": "master",<br>      "dockerfilepath": "Dockerfile",<br>      "gitrepo": "kuttleio/frontend",<br>      "method": "from_branch"<br>    },<br>    "endpoint": "",<br>    "environment": [],<br>    "memory": 512,<br>    "name": "frontend",<br>    "public": true<br>  },<br>  "runner": {<br>    "cpu": 256,<br>    "deploy": {<br>      "branch": "master",<br>      "dockerfilepath": "Dockerfile",<br>      "gitrepo": "kuttleio/runner",<br>      "method": "from_branch"<br>    },<br>    "endpoint": "",<br>    "environment": [],<br>    "memory": 512,<br>    "name": "runner",<br>    "public": false<br>  }<br>}</pre> | no |
 | <a name="input_standard_tags"></a> [standard\_tags](#input\_standard\_tags) | n/a | `any` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | n/a | `any` | n/a | yes |
 
