@@ -13,7 +13,7 @@ resource "github_branch" "new" {
   for_each      = local.services
   repository    = data.github_repository.repositories[each.key].name
   branch        = each.value.deploy_branch
-  source_sha    = data.github_branch.default[each.key].commit.0.sha
+  source_sha    = data.github_branch.master[each.key].commit.0.sha
   depends_on    = [github_repository_file.respository_files]
 }
 
