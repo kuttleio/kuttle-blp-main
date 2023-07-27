@@ -14,15 +14,10 @@ variable "private_subnets" {}
 variable "security_groups" {}
 variable "s3_tf_artefacts" {}
 variable "ipwhitelist" {
-  type = list(string)
-  default = [
-    "0.0.0.0/1",
-    "128.0.0.0/1"
-  ]
+  type = string
+  default = ["0.0.0.0/1", "128.0.0.0/1"]
   validation {
-    condition = alltrue([
-      for ip in var.ipwhitelist : can(cidrnetmask(ip))
-    ])
+    condition = can(cidrnetmask(var.ipwhitelist))
     error_message = "Invalid CIDR block format. Expected format: x.x.x.x/x"
   }
 }
