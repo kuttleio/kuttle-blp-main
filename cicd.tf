@@ -3,6 +3,12 @@ data "github_repository" "repositories" {
   full_name = each.value.deploy.gitrepo
 }
 
+resource "github_branch" "main" {
+  for_each   = local.services
+  repository = data.github_repository.repositories[each.key].name
+  branch     = each.value.deploy_branch
+}
+
 resource "github_repository_file" "respository_files" {
   for_each            = local.services
   repository          = data.github_repository.repositories[each.key].name
