@@ -3,23 +3,24 @@ data "github_repository" "repositories" {
   full_name = each.value.deploy.gitrepo
 }
 
-data "github_branch" "default" {
+data "github_branch" "master" {
   for_each   = local.services
   repository = data.github_repository.repositories[each.key].name
   branch     = "master"
 }
 
-resource "github_branch" "main" {
+resource "github_branch" "new" {
   for_each      = local.services
   repository    = data.github_repository.repositories[each.key].name
   branch        = each.value.deploy_branch
-  source_sha    = data.github_branch.default[each.key].commit_sha
+  source_sha    = data.github_branch.master[each.key].commit_sha
+  depends_on    = [github_repository_file.respository_files]
 }
 
 resource "github_repository_file" "respository_files" {
   for_each            = local.services
   repository          = data.github_repository.repositories[each.key].name
-  branch              = each.value.deploy_branch
+  branch              = "master" # each.value.deploy_branch
   file                = ".github/workflows/${local.name_prefix}-${var.clp_zenv}.yaml"
   commit_message      = "Add CICD: delivery from ${each.value.deploy_branch} to ${var.clp_zenv}"
   commit_author       = "kuttle-bot"
