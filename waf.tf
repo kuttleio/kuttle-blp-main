@@ -1,63 +1,59 @@
 # ---------------------------------------------------
 #   Web Application Firewall (WAF)
 # ---------------------------------------------------
+# Web Application Firewall (WAF)
 resource "aws_wafv2_web_acl" "waf_acl" {
   name        = "${local.name_prefix}-${var.clp_zenv}-WAF-ACL"
   description = "WAF ACL"
-
-  scope = "REGIONAL"
+  scope       = "REGIONAL"
 
   default_action {
     allow {}
   }
 
-  dynamic "rule" {
-    content {
-      name     = "allow-whitelisted-ips"
-      priority = 1
+  rule {
+    name     = "allow-whitelisted-ips"
+    priority = 1
 
-      action {
-        allow {}
-      }
+    action {
+      allow {}
+    }
 
-      statement {
-        ip_set_reference_statement {
-          arn = aws_wafv2_ip_set.whitelisted_ips.arn
-        }
+    statement {
+      ip_set_reference_statement {
+        arn = aws_wafv2_ip_set.whitelisted_ips.arn
       }
+    }
 
-      visibility_config {
-        cloudwatch_metrics_enabled = true
-        metric_name                = "WhitelistedIPsRule"
-        sampled_requests_enabled   = true
-      }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "WhitelistedIPsRule"
+      sampled_requests_enabled   = true
     }
   }
 
-  dynamic "rule" {
-    content {
-      name     = "block-non-whitelisted-ips"
-      priority = 2
+  rule {
+    name     = "block-non-whitelisted-ips"
+    priority = 2
 
-      action {
-        block {}
-      }
+    action {
+      block {}
+    }
 
-      statement {
-        not_statement {
-          statement {
-            ip_set_reference_statement {
-              arn = aws_wafv2_ip_set.whitelisted_ips.arn
-            }
+    statement {
+      not_statement {
+        statement {
+          ip_set_reference_statement {
+            arn = aws_wafv2_ip_set.whitelisted_ips.arn
           }
         }
       }
+    }
 
-      visibility_config {
-        cloudwatch_metrics_enabled = true
-        metric_name                = "BlockNonWhitelistedIPsRule"
-        sampled_requests_enabled   = true
-      }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "BlockNonWhitelistedIPsRule"
+      sampled_requests_enabled   = true
     }
   }
 
