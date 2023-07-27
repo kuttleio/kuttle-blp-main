@@ -72,7 +72,7 @@ resource "aws_wafv2_web_acl" "waf_acl" {
 
 resource "aws_wafv2_ip_set" "whitelisted_ips" {
   for_each           = toset(var.ipwhitelist)
-  name               = "${local.name_prefix}-${var.clp_zenv}-Whitelisted-${each.value}"
+  name               = "${local.name_prefix}-${var.clp_zenv}-Whitelisted-IPs"
   description        = "Whitelisted IPs"
   scope              = "REGIONAL"
   addresses          = [ each.key ]
