@@ -14,7 +14,7 @@ variable "private_subnets" {}
 variable "security_groups" {}
 variable "s3_tf_artefacts" {}
 variable "ipwhitelist" {
-  type = list(string)
+  type    = list(string)
   default = ["0.0.0.0/1", "128.0.0.0/1"]
   validation {
     condition = alltrue([

@@ -73,6 +73,11 @@ resource "aws_wafv2_ip_set" "whitelisted_ips" {
 }
 
 resource "aws_wafv2_web_acl_association" "acl_association" {
-  resource_arn = aws_lb.loadbalancers.arn
-  web_acl_arn  = aws_wafv2_web_acl.waf_acl.arn
+  for_each     = local.services
+  resource_arn = each.value.public ? aws_lb.loadbalancers[each.value.name].arn : null
+  web_acl_arn  = each.value.public ? aws_wafv2_web_acl.waf_acl.arn : null
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = [resource_arn, web_acl_arn]
+  }
 }
