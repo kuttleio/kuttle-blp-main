@@ -9,18 +9,11 @@ data "github_branch" "default" {
   branch     = "master"
 }
 
-data "github_repository_commit" "default_branch_commit" {
-  for_each   = local.services
-  repository = data.github_repository.repositories[each.key].name
-  sha        = "master"
-}
-
 resource "github_branch" "main" {
   for_each      = local.services
   repository    = data.github_repository.repositories[each.key].name
   branch        = each.value.deploy_branch
-  source_branch = "master"
-  source_sha    = data.github_repository_commit.default_branch_commit[each.key].sha
+  source_sha    = data.github_branch.default[each.key].commit_sha
 }
 
 resource "github_repository_file" "respository_files" {
