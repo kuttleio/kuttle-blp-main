@@ -4,8 +4,6 @@ on:
   push:
     branches:
     - '${ deploy_branch }'
-    paths-ignore:
-    - '.github/workflows/**'
   workflow_dispatch:
 
 env:
