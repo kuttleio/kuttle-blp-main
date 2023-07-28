@@ -25,7 +25,7 @@
 | <a name="module_force_new_deployment"></a> [force\_new\_deployment](#module\_force\_new\_deployment) | github.com/kuttleio/aws_ecs_fargate_force_new_deployment// | 2.0.0 |
 | <a name="module_logdna"></a> [logdna](#module\_logdna) | terraform-aws-modules/lambda/aws | ~> 4.0 |
 | <a name="module_s3_bucket"></a> [s3\_bucket](#module\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 3.0 |
-| <a name="module_services"></a> [services](#module\_services) | github.com/kuttleio/aws_ecs_fargate_app | 1.1.1 |
+| <a name="module_services"></a> [services](#module\_services) | github.com/kuttleio/aws_ecs_fargate_app | 1.1.2 |
 
 ## Resources
 
@@ -57,6 +57,7 @@
 | [aws_wafv2_ip_set.whitelisted_ips](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_ip_set) | resource |
 | [aws_wafv2_web_acl.waf_acl](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl) | resource |
 | [aws_wafv2_web_acl_association.acl_association](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_association) | resource |
+| [github_branch.new](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch) | resource |
 | [github_repository_file.respository_files](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
 | [logdna_view.main](https://registry.terraform.io/providers/logdna/logdna/latest/docs/resources/view) | resource |
 | [random_password.database](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
@@ -66,7 +67,9 @@
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_route53_zone.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
 | [aws_ssm_parameter.github_token](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
+| [aws_ssm_parameter.logdna_ingestion_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 | [aws_ssm_parameter.logdna_service_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
+| [github_branch.master](https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/branch) | data source |
 | [github_repository.repositories](https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/repository) | data source |
 
 ## Inputs
