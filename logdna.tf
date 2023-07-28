@@ -1,7 +1,10 @@
+# ---------------------------------------------------
+#    Mezmo (LogDNA) Views
+# ---------------------------------------------------
 resource "logdna_view" "main" {
   name       = "${var.clp_zenv}-${local.short_region_name} - logs"
   query      = "-health"
-  categories = ["DEV"]
+  categories = [upper(var.clp_account)]
   tags       = ["${local.name_prefix}-${var.clp_zenv}"]
 }
 
@@ -9,7 +12,7 @@ resource "logdna_view" "main" {
 #   levels     = ["error"]
 #   name       = "${var.clp_zenv}-${local.short_region_name} - errors"
 #   query      = "-health"
-#   categories = ["DEV"]
+#   categories = [upper(var.clp_account)]
 #   tags       = ["${local.name_prefix}-${var.clp_zenv}"]
 
 #   # slack_channel {
@@ -23,8 +26,13 @@ resource "logdna_view" "main" {
 # }
 
 # ---------------------------------------------------
-#    LogDNA pushing logs from CloudWatch
+#    Mezmo (LogDNA) pushing logs from CloudWatch
 # ---------------------------------------------------
+data "aws_ssm_parameter" "logdna_ingestion_key" {
+  name            = "/${local.name_prefix}/logdna_ingestion_key"
+  with_decryption = true
+}
+
 module "logdna" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "~> 4.0"
@@ -42,7 +50,7 @@ module "logdna" {
   cloudwatch_logs_retention_in_days = 1
 
   environment_variables = {
-    LOGDNA_KEY    = data.aws_ssm_parameter.logdna_service_key.value
+    LOGDNA_KEY    = data.aws_ssm_parameter.logdna_ingestion_key.value
     LOGDNA_TAGS   = "${local.name_prefix}-${var.clp_zenv}"
     LOG_RAW_EVENT = "yes"
   }
