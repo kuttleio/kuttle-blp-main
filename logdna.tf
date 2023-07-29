@@ -65,11 +65,11 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
 # ---------------------------------------------------
 #   Mezmo (LogDNA) - Outputs
 # ---------------------------------------------------
-output "logdna_view_url" {
-  description = "Mezmo (LogDNA) View URL"
-  value       = "https://app.mezmo.com/${var.mezmo_account_id}/logs/view/${logdna_view.main.id}"
-}
+# output "logdna_view_url" {
+#   description = "Mezmo (LogDNA) View URL"
+#   value       = "https://app.mezmo.com/${var.mezmo_account_id}/logs/view/${logdna_view.main.id}"
+# }
 
-output "logdna_view_id" {
-  value = logdna_view.main.id
-}
+# output "logdna_view_id" {
+#   value = logdna_view.main.id
+# }
