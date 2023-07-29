@@ -73,3 +73,12 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
 # output "logdna_view_id" {
 #   value = logdna_view.main.id
 # }
+
+data "logdna_view" "example" {
+  id = "63bff33c12"  # Replace with the correct view resource ID
+}
+
+# Now you can use the data source result in your Terraform configuration, for example, to display the name of the view:
+output "view_name" {
+  value = data.logdna_view.example.name
+}
