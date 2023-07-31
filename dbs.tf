@@ -66,7 +66,7 @@ module "cache" {
   source                        = "./modules/elasticache-redis"
   for_each                      = { for cache_name, cache_config in var.caches : cache_name => cache_config if cache_config.type == "cache" }
   replication_group_id          = "${local.name_prefix}-${var.clp_zenv}"
-  replication_group_description = "ElastiCache replication group for ${local.name_prefix}-${var.clp_wenv}"
+  replication_group_description = "ElastiCache replication group for ${local.name_prefix}-${var.clp_zenv}"
   engine                        = each.value.engine
   port                          = coalesce(each.value.port, local.database_default_properties[each.value.engine].port)
   engine_version                = coalesce(each.value.engine_version, local.database_default_properties[each.value.engine].engine_version)
