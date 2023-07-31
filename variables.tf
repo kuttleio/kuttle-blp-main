@@ -59,15 +59,7 @@ variable "caches" {
     snapshot_retention_limit   = optional(number)
     tags                       = optional(map(string))
   }))
-  default = {
-    # cache = {
-    #   name      = "cache"
-    #   type      = "cache"
-    #   engine    = "redis"
-    #   security_group_ids = ["sg-0a0a0a0a0a0a0a0a0"]
-    #   node_type = "cache.t4g.micro"
-    # }
-  }
+  default = {}
 }
 
 variable "database_allocated_storage" {
