@@ -41,6 +41,35 @@ variable "datastores" {
   }))
   default = {}
 }
+
+variable "caches" {
+  type = map(object({
+    name                       = string
+    type                       = string
+    engine                     = string
+    engine_version             = optional(string)
+    port                       = optional(number)
+    security_group_ids         = list(string)
+    num_cache_clusters         = optional(number)
+    node_type                  = optional(string)
+    automatic_failover_enabled = optional(bool)
+    apply_immediately          = optional(bool)
+    maintenance_window         = optional(string)
+    snapshot_window            = optional(string)
+    snapshot_retention_limit   = optional(number)
+    tags                       = optional(map(string))
+  }))
+  default = {
+    # cache = {
+    #   name      = "cache"
+    #   type      = "cache"
+    #   engine    = "redis"
+    #   security_group_ids = ["sg-0a0a0a0a0a0a0a0a0"]
+    #   node_type = "cache.t4g.micro"
+    # }
+  }
+}
+
 variable "database_allocated_storage" {
   type    = number
   default = 20
