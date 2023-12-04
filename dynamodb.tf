@@ -1,6 +1,6 @@
 locals {
   dynamodb_defaults = {
-    billing_mode                          = "PAY_PER_REQUEST"
+    billing_mode                          = "PROVISIONED"
     table_class                           = "STANDARD"
     hash_key                              = null
     range_key                             = null
