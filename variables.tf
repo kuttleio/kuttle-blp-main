@@ -12,7 +12,7 @@ variable "ecr_account_id" {}
 variable "public_subnets" {}
 variable "private_subnets" {}
 variable "security_groups" {}
-variable "s3_tf_artefacts" {}
+
 variable "ipwhitelist" {
   type    = list(string)
   default = ["0.0.0.0/1", "128.0.0.0/1"]
@@ -24,24 +24,6 @@ variable "ipwhitelist" {
   }
 }
 variable "mezmo_account_id" {}
-
-# variable "datastores" {
-#   type = map(object({
-#     name                           = string
-#     type                           = string
-#     engine                         = string
-#     version                        = string
-#     class                          = string
-#     instance                       = string
-#     autoscaling                    = string
-#     database_allocated_storage     = optional(number)
-#     database_max_allocated_storage = optional(number)
-#     database_username              = optional(string)
-#     database_port                  = optional(number)
-#     tags                           = optional(map(string))
-#   }))
-#   default = {}
-# }
 
 variable "datastores" {
   type = object(
@@ -165,47 +147,78 @@ variable "services" {
     })
   }))
   default = {
-    frontend = {
-      public      = true
-      name        = "frontend"
-      cpu         = 256
-      memory      = 512
-      endpoint    = ""
-      environment = []
-      deploy = {
-        gitrepo        = "kuttleio/frontend"
-        dockerfilepath = "Dockerfile"
-        method         = "from_branch"
-        branch         = "master"
+    services = {
+      api = {
+        public = true
+        name = "api"
+        endpoint = "api"
+        cpu = 256
+        memory = 512
+        environment = []
+        deploy = {
+          gitrepo = "kuttleio/api"
+          dockerfilepath = "Dockerfile"
+          method = "from_branch"
+          branch = "master"
+        }
+      }
+      back = {
+        public = false
+        name = "back"
+        endpoint = "back"
+        cpu = 256
+        memory = 512
+        environment = [
+          {
+            name = "SERVICE_ENV_VAR"
+            value = "yeeee"
+          },
+        ]
+        deploy = {
+          gitrepo = "kuttleio/back"
+          dockerfilepath = "Dockerfile"
+          method = "from_branch"
+          branch = "master"
+        }
       }
     }
-    backend = {
-      public      = true
-      name        = "backend"
-      cpu         = 256
-      memory      = 512
-      endpoint    = "backend"
-      environment = []
-      deploy = {
-        gitrepo        = "kuttleio/backend"
-        dockerfilepath = "Dockerfile"
-        method         = "from_branch"
-        branch         = "master"
+    datastores = {
+      # redis = {
+      #   num_clusters = 1
+      #   version = "7.1"
+      #   node_type = "cache.t4g.micro"
+      #   failover = false
+      # }
+      dynamodb = {
+        main = {
+          table_name                      = "main"
+          billing_mode                    = "PROVISIONED"
+          hash_key                        = "environment_id"
+          read_capacity                   = 5
+          write_capacity                  = 5
+          server_side_encryption_enabled  = true
+          deletion_protection_enabled     = true
+          stream_enabled                  = true
+          point_in_time_recovery_enabled  = true
+          attributes = [
+            {
+              name = "environment_id"
+              type = "S"
+            },
+          ]
+        }
       }
-    }
-    runner = {
-      public      = false
-      name        = "runner"
-      cpu         = 256
-      memory      = 512
-      endpoint    = ""
-      environment = []
-      deploy = {
-        gitrepo        = "kuttleio/runner"
-        dockerfilepath = "Dockerfile"
-        method         = "from_branch"
-        branch         = "master"
-      }
-    }
+  }
+    envvars = [
+      {
+        name = "SHARED_ENV_VAR"
+        value = "yooo"
+      },
+    ]
+    secrets = []
+    ipwhitelist = [
+        "0.0.0.0/1",
+        "128.0.0.0/1",
+    ]
   }
 }

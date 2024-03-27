@@ -4,16 +4,8 @@
 locals {
   added_env = [
     {
-      name  = "QUEUE_URL"
-      value = aws_sqs_queue.main.url
-    },
-    {
-      name  = "QUEUE_URL_REVERSED"
-      value = aws_sqs_queue.reversed.url
-    },
-    {
-      name  = "S3_TERRAFORM_ARTEFACTS"
-      value = var.s3_tf_artefacts
+      name  = "PLACEHOLDER"
+      value = "PLACEHOLDER"
     },
   ]
 }
