@@ -17,7 +17,7 @@ module "database" {
   
   for_each = {
     for datastore_name, datastore_config in var.datastores : 
-    datastore_name => datastore_config if contains(["sql"], tostring(datastore_config["type"]))
+    datastore_name => datastore_config if contains(["sql"], tostring(lookup(datastore_config, "type", "")))
   }
 
   identifier                = "${local.name_prefix}-${var.clp_zenv}-${each.value.engine}-${each.key}"
@@ -41,6 +41,7 @@ module "database" {
   backup_retention_period   = 0
   tags                      = merge(try(each.value.tags, {}), var.standard_tags)
 }
+
 
 resource "random_password" "database" {
   for_each = { for datastore_name, datastore_config in var.datastores : datastore_name => datastore_config if datastore_config.type == "sql" }
