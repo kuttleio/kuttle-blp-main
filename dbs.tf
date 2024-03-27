@@ -14,7 +14,12 @@ locals {
 module "database" {
   source                    = "terraform-aws-modules/rds/aws"
   version                   = "~> 5.0"
-  for_each                  = { for datastore_name, datastore_config in var.datastores : datastore_name => datastore_config if datastore_config.type == "sql" }
+  
+  for_each = {
+    for datastore_name, datastore_config in var.datastores : 
+    datastore_name => datastore_config if contains(["sql"], tostring(datastore_config["type"]))
+  }
+
   identifier                = "${local.name_prefix}-${var.clp_zenv}-${each.value.engine}-${each.key}"
   db_name                   = each.value.name
   engine                    = each.value.engine
