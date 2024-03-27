@@ -1,29 +1,29 @@
 # ---------------------------------------------------
 #    Mezmo (LogDNA) Views
 # ---------------------------------------------------
-resource "logdna_view" "main" {
-  name       = "${var.clp_zenv}-${local.short_region_name} - logs"
-  query      = "-health"
-  categories = [upper(var.clp_account)]
-  tags       = ["${local.name_prefix}-${var.clp_zenv}"]
-}
-
-# resource "logdna_view" "errors" {
-#   levels     = ["error"]
-#   name       = "${var.clp_zenv}-${local.short_region_name} - errors"
+# resource "logdna_view" "main" {
+#   name       = "${var.clp_zenv}-${local.short_region_name} - logs"
 #   query      = "-health"
 #   categories = [upper(var.clp_account)]
 #   tags       = ["${local.name_prefix}-${var.clp_zenv}"]
-
-#   # slack_channel {
-#   #     immediate       = "true"
-#   #     operator        = "presence"
-#   #     terminal        = "false"
-#   #     triggerinterval = "30"
-#   #     triggerlimit    = 1
-#   #     url             = var.logdna_slack_non_prod_alerts
-#   # }
 # }
+
+# # resource "logdna_view" "errors" {
+# #   levels     = ["error"]
+# #   name       = "${var.clp_zenv}-${local.short_region_name} - errors"
+# #   query      = "-health"
+# #   categories = [upper(var.clp_account)]
+# #   tags       = ["${local.name_prefix}-${var.clp_zenv}"]
+
+# #   # slack_channel {
+# #   #     immediate       = "true"
+# #   #     operator        = "presence"
+# #   #     terminal        = "false"
+# #   #     triggerinterval = "30"
+# #   #     triggerlimit    = 1
+# #   #     url             = var.logdna_slack_non_prod_alerts
+# #   # }
+# # }
 
 # ---------------------------------------------------
 #    Mezmo (LogDNA) pushing logs from CloudWatch
@@ -65,11 +65,20 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
 # ---------------------------------------------------
 #   Mezmo (LogDNA) - Outputs
 # ---------------------------------------------------
-output "logdna_view_url" {
-  description = "Mezmo (LogDNA) View URL"
-  value       = "https://app.mezmo.com/${var.mezmo_account_id}/logs/view/${logdna_view.main.id}"
+# output "logdna_view_url" {
+#   description = "Mezmo (LogDNA) View URL"
+#   value       = "https://app.mezmo.com/${var.mezmo_account_id}/logs/view/${logdna_view.main.id}"
+# }
+
+# output "logdna_view_id" {
+#   value = logdna_view.main.id
+# }
+
+data "logdna_view" "example" {
+  id = "63bff33c12"  # Replace with the correct view resource ID
 }
 
-output "logdna_view_id" {
-  value = logdna_view.main.id
+# Now you can use the data source result in your Terraform configuration, for example, to display the name of the view:
+output "view_name" {
+  value = data.logdna_view.example.name
 }
