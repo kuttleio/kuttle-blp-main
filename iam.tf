@@ -6,7 +6,6 @@ resource "aws_iam_role" "main" {
   tags = var.standard_tags
 
   managed_policy_arns = [
-    aws_iam_policy.sqs.arn,
     aws_iam_policy.ecs.arn,
     aws_iam_policy.rds.arn,
     aws_iam_policy.pricing.arn,
