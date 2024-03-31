@@ -17,7 +17,7 @@ module "database" {
   
   for_each = {
     for datastore_name, datastore_config in var.datastores : 
-    datastore_name => datastore_config if contains(["sql"], tostring(lookup(datastore_config, "type", "")))
+    datastore_name => can(datastore_config, "type") && contains(["dynamodb"], tostring(datastore_config["type"]))
   }
 
   identifier                = "${local.name_prefix}-${var.clp_zenv}-${each.value.engine}-${each.key}"
@@ -46,7 +46,7 @@ module "database" {
 resource "random_password" "database" {
   for_each = {
     for datastore_name, datastore_config in var.datastores : 
-    datastore_name => datastore_config if contains(["sql"], tostring(lookup(datastore_config, "type", "")))
+    datastore_name => can(datastore_config, "type") && contains(["dynamodb"], tostring(datastore_config["type"]))
   }
 
   length   = 24
@@ -56,7 +56,7 @@ resource "random_password" "database" {
 resource "aws_ssm_parameter" "database_connection_string" {
   for_each = {
     for datastore_name, datastore_config in var.datastores : 
-    datastore_name => datastore_config if contains(["sql"], tostring(lookup(datastore_config, "type", "")))
+    datastore_name => can(datastore_config, "type") && contains(["dynamodb"], tostring(datastore_config["type"]))
   }
 
   name     = "/${local.name_prefix}/${var.clp_zenv}/${each.value.engine}_connection_string-${each.key}"
