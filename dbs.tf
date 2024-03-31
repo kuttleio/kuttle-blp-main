@@ -17,7 +17,7 @@ module "database" {
   
   for_each = {
     for datastore_name, datastore_config in var.datastores : 
-    datastore_name => datastore_config if contains(["sql"], tostring(datastore_config["type"]))
+    datastore_name => datastore_config if contains(["sql"], tostring(lookup(datastore_config, "type", "")))
   }
 
   identifier                = "${local.name_prefix}-${var.clp_zenv}-${each.value.engine}-${each.key}"
@@ -43,13 +43,21 @@ module "database" {
 }
 
 resource "random_password" "database" {
-  for_each = { for datastore_name, datastore_config in var.datastores : datastore_name => datastore_config if datastore_config.type == "sql" }
+  for_each = {
+    for datastore_name, datastore_config in var.datastores :
+    datastore_name => datastore_config if contains(["sql"], tostring(lookup(datastore_config, "type", "")))
+  }
+  # for_each = { for datastore_name, datastore_config in var.datastores : datastore_name => datastore_config if datastore_config.type == "sql" }
   length   = 24
   special  = false
 }
 
 resource "aws_ssm_parameter" "database_connection_string" {
-  for_each = { for datastore_name, datastore_config in var.datastores : datastore_name => datastore_config if datastore_config.type == "sql" }
+  for_each = {
+    for datastore_name, datastore_config in var.datastores :
+    datastore_name => datastore_config if contains(["sql"], tostring(lookup(datastore_config, "type", "")))
+  }
+  # for_each = { for datastore_name, datastore_config in var.datastores : datastore_name => datastore_config if datastore_config.type == "sql" }
   name     = "/${local.name_prefix}/${var.clp_zenv}/${each.value.engine}_connection_string-${each.key}"
   type     = "SecureString"
   value    = "${each.value.engine}://${module.database[each.key].db_instance_username}:${random_password.database[each.key].result}@${module.database[each.key].db_instance_endpoint}/${module.database[each.key].db_instance_name}"
