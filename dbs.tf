@@ -36,7 +36,7 @@ module "database" {
   create_db_subnet_group    = true
   subnet_ids                = var.private_subnets
   vpc_security_group_ids    = var.security_groups
-  maintenance_window        = "Mon:00:00-Mon:03:00"
+  maintenance_window        = "Sun:00:00-Mon:03:00"
   backup_window             = "04:00-06:00"
   backup_retention_period   = 0
   tags                      = merge(try(each.value.tags, {}), var.standard_tags)
@@ -44,13 +44,21 @@ module "database" {
 
 
 resource "random_password" "database" {
-  for_each = { for datastore_name, datastore_config in var.datastores : datastore_name => datastore_config if datastore_config.type == "sql" }
+  for_each = {
+    for datastore_name, datastore_config in var.datastores : 
+    datastore_name => datastore_config if contains(["sql"], tostring(lookup(datastore_config, "type", "")))
+  }
+
   length   = 24
   special  = false
 }
 
 resource "aws_ssm_parameter" "database_connection_string" {
-  for_each = { for datastore_name, datastore_config in var.datastores : datastore_name => datastore_config if datastore_config.type == "sql" }
+  for_each = {
+    for datastore_name, datastore_config in var.datastores : 
+    datastore_name => datastore_config if contains(["sql"], tostring(lookup(datastore_config, "type", "")))
+  }
+
   name     = "/${local.name_prefix}/${var.clp_zenv}/${each.value.engine}_connection_string-${each.key}"
   type     = "SecureString"
   value    = "${each.value.engine}://${module.database[each.key].db_instance_username}:${random_password.database[each.key].result}@${module.database[each.key].db_instance_endpoint}/${module.database[each.key].db_instance_name}"
