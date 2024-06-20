@@ -12,7 +12,7 @@ variable "ecr_account_id" {}
 variable "public_subnets" {}
 variable "private_subnets" {}
 variable "security_groups" {}
-variable "s3_tf_artefacts" {}
+
 variable "ipwhitelist" {
   type    = list(string)
   default = ["0.0.0.0/1", "128.0.0.0/1"]
@@ -24,24 +24,6 @@ variable "ipwhitelist" {
   }
 }
 variable "mezmo_account_id" {}
-
-# variable "datastores" {
-#   type = map(object({
-#     name                           = string
-#     type                           = string
-#     engine                         = string
-#     version                        = string
-#     class                          = string
-#     instance                       = string
-#     autoscaling                    = string
-#     database_allocated_storage     = optional(number)
-#     database_max_allocated_storage = optional(number)
-#     database_username              = optional(string)
-#     database_port                  = optional(number)
-#     tags                           = optional(map(string))
-#   }))
-#   default = {}
-# }
 
 variable "datastores" {
   type = object(
@@ -165,46 +147,37 @@ variable "services" {
     })
   }))
   default = {
-    frontend = {
-      public      = true
-      name        = "frontend"
-      cpu         = 256
-      memory      = 512
-      endpoint    = ""
+    api = {
+      public = true
+      name = "api"
+      endpoint = "api"
+      cpu = 256
+      memory = 512
       environment = []
       deploy = {
-        gitrepo        = "kuttleio/frontend"
+        gitrepo = "kuttleio/api"
         dockerfilepath = "Dockerfile"
-        method         = "from_branch"
-        branch         = "master"
+        method = "from_branch"
+        branch = "master"
       }
     }
-    backend = {
-      public      = true
-      name        = "backend"
-      cpu         = 256
-      memory      = 512
-      endpoint    = "backend"
-      environment = []
+    back = {
+      public = false
+      name = "back"
+      endpoint = "back"
+      cpu = 256
+      memory = 512
+      environment = [
+        {
+          name = "SERVICE_ENV_VAR"
+          value = "yeeee"
+        },
+      ]
       deploy = {
-        gitrepo        = "kuttleio/backend"
+        gitrepo = "kuttleio/back"
         dockerfilepath = "Dockerfile"
-        method         = "from_branch"
-        branch         = "master"
-      }
-    }
-    runner = {
-      public      = false
-      name        = "runner"
-      cpu         = 256
-      memory      = 512
-      endpoint    = ""
-      environment = []
-      deploy = {
-        gitrepo        = "kuttleio/runner"
-        dockerfilepath = "Dockerfile"
-        method         = "from_branch"
-        branch         = "master"
+        method = "from_branch"
+        branch = "master"
       }
     }
   }

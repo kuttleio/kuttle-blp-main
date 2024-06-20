@@ -3,7 +3,7 @@
 # ---------------------------------------------------
 module "ecs_fargate" {
   source       = "terraform-aws-modules/ecs/aws"
-  version      = "4.1.3"
+  version      = "~> 5.0"
   cluster_name = "${local.name_prefix}-${var.clp_zenv}"
   tags         = var.standard_tags
 
